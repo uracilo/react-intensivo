@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>React Intensivo — TaskFlow</title>
+  <style>
+    :root {
+      --bg: #f3f0ea;
+      --ink: #1c1917;
+      --muted: #78716c;
+      --accent: #0f766e;
+      --line: #e7e0d5;
+      --surface: #fffdf8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 40%),
+        linear-gradient(180deg, #faf7f2 0%, var(--bg) 100%);
+      min-height: 100vh;
+    }
+    main {
+      width: min(760px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 3rem 0;
+    }
+    h1 { margin: 0 0 0.4rem; letter-spacing: -0.03em; }
+    .lead { color: var(--muted); margin: 0 0 2rem; }
+    .list { display: grid; gap: 0.75rem; padding: 0; margin: 0; list-style: none; }
+    a.card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1rem 1.15rem;
+      box-shadow: 0 12px 32px rgba(28, 25, 23, 0.06);
+    }
+    a.card:hover { border-color: var(--accent); }
+    a.card strong { color: var(--accent); }
+    a.card p { margin: 0.35rem 0 0; color: var(--muted); font-size: 0.95rem; }
+    .links { margin-top: 2rem; color: var(--muted); font-size: 0.9rem; }
+    .links a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>React Intensivo · TaskFlow</h1>
+    <p class="lead">Demos progresivas: de HTML básico al CRUD con JWT.</p>
+    <ul class="list">
+      <li><a class="card" href="./00/"><strong>Día 0</strong><p>HTML + CSS + JS vanilla</p></a></li>
+      <li><a class="card" href="./01/"><strong>Día 1</strong><p>Fundamentos React + TypeScript</p></a></li>
+      <li><a class="card" href="./02/"><strong>Día 2</strong><p>Estado y formularios</p></a></li>
+      <li><a class="card" href="./03/"><strong>Día 3</strong><p>Datos asíncronos y hooks</p></a></li>
+      <li><a class="card" href="./04/"><strong>Día 4</strong><p>Router y CRUD</p></a></li>
+      <li><a class="card" href="./05/"><strong>Día 5</strong><p>TaskFlow + JWT + API</p></a></li>
+    </ul>
+    <p class="links">
+      <a href="./docs/TEMARIO.md">Temario</a> ·
+      <a href="./docs/API.md">Contrato API</a> ·
+      <a href="https://github.com/uracilo/react-intensivo">GitHub</a>
+    </p>
+  </main>
+</body>
+</html>

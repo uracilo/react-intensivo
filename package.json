@@ -1,0 +1,21 @@
+{
+  "name": "react-intensivo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Curso intensivo React + TypeScript — TaskFlow (demos progresivas)",
+  "scripts": {
+    "dev:01": "npm run dev --prefix demos/01-fundamentos",
+    "dev:02": "npm run dev --prefix demos/02-estado",
+    "dev:03": "npm run dev --prefix demos/03-datos",
+    "dev:04": "npm run dev --prefix demos/04-crud-router",
+    "dev:05": "npm run dev --prefix demos/05-taskflow",
+    "build:01": "npm run build --prefix demos/01-fundamentos",
+    "build:02": "npm run build --prefix demos/02-estado",
+    "build:03": "npm run build --prefix demos/03-datos",
+    "build:04": "npm run build --prefix demos/04-crud-router",
+    "build:05": "npm run build --prefix demos/05-taskflow",
+    "install:demos": "npm install --prefix demos/01-fundamentos && npm install --prefix demos/02-estado && npm install --prefix demos/03-datos && npm install --prefix demos/04-crud-router && npm install --prefix demos/05-taskflow",
+    "build:all": "npm run build:01 && npm run build:02 && npm run build:03 && npm run build:04 && npm run build:05",
+    "build:site": "npm run build:all && node scripts/merge-dist.mjs"
+  }
+}

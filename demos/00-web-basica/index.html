@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow — Día 0 · Web básica</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-mark">TF</span>
+      <div>
+        <h1>TaskFlow</h1>
+        <p class="tagline">Día 0 — HTML, CSS y JavaScript</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>Nueva tarea</h2>
+      <form id="task-form" class="task-form">
+        <label for="task-title">Título</label>
+        <input
+          id="task-title"
+          name="title"
+          type="text"
+          placeholder="Ej: Preparar endpoints GET /tasks"
+          required
+          minlength="3"
+          maxlength="120"
+          autocomplete="off"
+        />
+        <button type="submit" class="btn primary">Agregar</button>
+      </form>
+      <p id="form-error" class="error" hidden></p>
+    </section>
+
+    <section class="panel">
+      <div class="list-header">
+        <h2>Mis tareas</h2>
+        <p id="task-count" class="muted">0 tareas</p>
+      </div>
+      <ul id="task-list" class="task-list" aria-live="polite"></ul>
+      <p id="empty-state" class="empty">Todavía no hay tareas. Agregá la primera.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Curso React Intensivo · Abrí la consola del navegador (F12) para ver los logs.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
