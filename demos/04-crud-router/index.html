@@ -3,7 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>TaskFlow — Demo 04</title>
+    <script>
+      try {
+        ;['taskflow-api-url', 'taskflow-api-url-v2'].forEach(function (key) {
+          var v = localStorage.getItem(key)
+          if (
+            v &&
+            (v.indexOf('52.87.135.237') >= 0 ||
+              (location.protocol === 'https:' && v.indexOf('http://') === 0))
+          ) {
+            localStorage.removeItem(key)
+          }
+        })
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

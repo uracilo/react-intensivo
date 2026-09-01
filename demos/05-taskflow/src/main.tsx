@@ -1,9 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
-import { applyApiUrlFromQuery } from './config/apiUrl'
+import { initApiUrl } from './config/apiUrl'
 
-applyApiUrlFromQuery()
+initApiUrl()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
