@@ -20,10 +20,13 @@ export function Layout() {
       <AppBar position="static" elevation={1}>
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Día 5 — Users App
+            TaskFlow — Día 5
           </Typography>
-          <Button component={RouterLink} to="/users" color="inherit">
-            Users
+          <Button component={RouterLink} to="/projects" color="inherit">
+            Proyectos
+          </Button>
+          <Button component={RouterLink} to="/tasks" color="inherit" sx={{ ml: 1 }}>
+            Tareas
           </Button>
           <IconButton
             color="inherit"

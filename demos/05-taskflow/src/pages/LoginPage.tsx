@@ -8,30 +8,38 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth'
 import { useToast } from '../context/ToastContext'
+import { API_URL } from '../types'
 
 export function LoginPage() {
   const { login } = useAuth()
   const { showToast } = useToast()
   const navigate = useNavigate()
-  const [username, setUsername] = useState('demo')
-  const [password, setPassword] = useState('demo123')
+  const [username, setUsername] = useState('ana')
+  const [password, setPassword] = useState('ana123')
   const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const ok = login(username, password)
+    setLoading(true)
+    setError(null)
+    const ok = await login(username, password)
+    setLoading(false)
     if (ok) {
-      showToast('Bienvenido')
-      navigate('/users')
+      showToast('Bienvenido a TaskFlow')
+      navigate('/projects')
     } else {
-      setError('Credenciales inválidas (demo / demo123)')
+      setError('Credenciales inválidas. Probá ana / ana123')
     }
   }
 
   return (
-    <Box maxWidth={400} mx="auto" mt={8}>
+    <Box maxWidth={440} mx="auto" mt={8}>
       <Typography variant="h5" gutterBottom>
-        Login
+        TaskFlow — Login
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        API: {API_URL}
       </Typography>
       <form onSubmit={handleSubmit}>
         <Stack spacing={2}>
@@ -49,8 +57,8 @@ export function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
           />
-          <Button type="submit" variant="contained">
-            Entrar
+          <Button type="submit" variant="contained" disabled={loading}>
+            {loading ? 'Entrando…' : 'Entrar'}
           </Button>
         </Stack>
       </form>

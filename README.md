@@ -14,8 +14,8 @@ Repo limpio: **una carpeta = un día**. Sin monorepo complejo.
 | 1 | [`demos/01-fundamentos`](demos/01-fundamentos/) | React + TS + MUI: user cards |
 | 2 | [`demos/02-estado`](demos/02-estado/) | `useState`, forms, `useRef`, `useEffect`, TODO MUI |
 | 3 | [`demos/03-datos`](demos/03-datos/) | `useFetch<T>`, JSONPlaceholder, paginación, búsqueda |
-| 4 | [`demos/04-crud-router`](demos/04-crud-router/) | json-server + Axios + React Router CRUD |
-| 5 | [`demos/05-taskflow`](demos/05-taskflow/) | Context, dark mode, toast, error boundary + deploy |
+| 4 | [`demos/04-crud-router`](demos/04-crud-router/) | TaskFlow API + Axios + React Router CRUD |
+| 5 | [`demos/05-taskflow`](demos/05-taskflow/) | Context, dark mode, toast + TaskFlow final |
 
 Guías paso a paso: [`docs/`](docs/) · Temario: [`docs/TEMARIO.md`](docs/TEMARIO.md)
 
@@ -24,7 +24,7 @@ Guías paso a paso: [`docs/`](docs/) · Temario: [`docs/TEMARIO.md`](docs/TEMARI
 - Node.js 20+
 - npm 10+
 - Navegador moderno
-- (Día 4) json-server en `:3001` — `npm run api` en demo 04/05
+- (Días 4–5) API TaskFlow en `http://52.87.135.237:8080` — ver [Swagger](http://52.87.135.237:8080/swagger-ui/index.html)
 
 ## Cómo empezar
 
@@ -44,17 +44,18 @@ Abrí `demos/00-web-basica/index.html` en el navegador.
 npm run dev:01   # user cards + MUI
 npm run dev:02   # TODO list
 npm run dev:03   # users + posts (JSONPlaceholder)
-npm run dev:04   # CRUD + router (requiere npm run api en otra terminal)
+npm run dev:04   # CRUD TaskFlow + router
 npm run dev:05   # app final + theme + toast
 ```
 
-### Día 4/5 — json-server
+### Login TaskFlow (Días 4 y 5)
 
-```bash
-cd demos/04-crud-router   # o demos/05-taskflow
-npm run api               # http://localhost:3001
-npm run dev               # en otra terminal
 ```
+Usuario: ana
+Password: ana123
+```
+
+API: `http://52.87.135.237:8080` — [Swagger UI](http://52.87.135.237:8080/swagger-ui/index.html)
 
 ## Documentación
 

@@ -18,7 +18,7 @@
 
 ## Integrador (~3.5 h)
 
-**Continuidad:** extender la app del Día 4 (no empezar de cero).
+**Continuidad:** extender la app del Día 4 conectada a TaskFlow (`http://52.87.135.237:8080`).
 
 Agregar:
 1. `ThemeContext` + toggle dark/light en navbar

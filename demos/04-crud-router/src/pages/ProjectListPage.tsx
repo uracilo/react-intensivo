@@ -6,11 +6,11 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { Link as RouterLink } from 'react-router-dom'
-import { fetchUsers } from '../api/usersApi'
+import { fetchProjects } from '../api/taskflowApi'
 import { useFetch } from '../hooks/useFetch'
 
-export function UserListPage() {
-  const { data, error, isLoading } = useFetch(fetchUsers)
+export function ProjectListPage() {
+  const { data, error, isLoading } = useFetch(fetchProjects)
 
   if (isLoading) {
     return (
@@ -21,35 +21,31 @@ export function UserListPage() {
   }
 
   if (error) {
-    return (
-      <Alert severity="error">
-        {error.message} — ¿Está corriendo <code>npm run api</code>?
-      </Alert>
-    )
+    return <Alert severity="error">{error.message}</Alert>
   }
 
   if (!data?.length) {
-    return <Typography color="text.secondary">No hay usuarios.</Typography>
+    return <Typography color="text.secondary">No hay proyectos.</Typography>
   }
 
   return (
     <Stack spacing={2}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography variant="h5">Usuarios</Typography>
+        <Typography variant="h5">Proyectos</Typography>
         <Button
           component={RouterLink}
-          to="/users/new"
+          to="/projects/new"
           variant="contained"
           startIcon={<AddIcon />}
         >
           Nuevo
         </Button>
       </Stack>
-      {data.map((user) => (
+      {data.map((project) => (
         <Box
-          key={user.id}
+          key={project.id}
           component={RouterLink}
-          to={`/users/${user.id}`}
+          to={`/projects/${project.id}`}
           sx={{
             p: 2,
             border: 1,
@@ -60,9 +56,9 @@ export function UserListPage() {
             '&:hover': { bgcolor: 'action.hover' },
           }}
         >
-          <Typography variant="subtitle1">{user.name}</Typography>
+          <Typography variant="subtitle1">{project.name}</Typography>
           <Typography variant="body2" color="text.secondary">
-            {user.email} · {user.role}
+            {project.description ?? 'Sin descripción'} · {project.createdAt}
           </Typography>
         </Box>
       ))}

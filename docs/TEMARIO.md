@@ -46,17 +46,15 @@
 - Custom hooks: `useToggle`, `useFetch<T>`
 - **Entregable:** vistas `/users` y `/posts` con JSONPlaceholder
 
-## Día 4 — API avanzada + Routing (~8 h)
+## Día 4 — TaskFlow API + Routing (~8 h)
 
-- json-server (CRUD persistente), POST / PUT / DELETE
-- Headers, errores HTTP, Axios, variables de entorno
-- React Router v6: rutas dinámicas y protegidas
-- **Entregable:** CRUD de users con routing y feedback inline
+- JWT login contra Spring Boot
+- Axios + CRUD proyectos/tareas
+- React Router v6
+- **Entregable:** SPA conectada a TaskFlow API
 
-## Día 5 — Context, theme, toast, error boundaries, deploy (~8 h)
+## Día 5 — Context, theme, toast, deploy (~8 h)
 
-- `useContext`, Provider tipado, custom hook con guard
-- MUI `ThemeProvider` + dark mode, `Snackbar` global
-- Error boundaries, accesibilidad básica
-- Extiende la app del Día 4 (no empezar de cero)
+- Extiende Día 4 (misma API TaskFlow)
+- ThemeContext + dark mode, ToastContext, ErrorBoundary
 - **Entregable:** app desplegada en Vercel / Netlify

@@ -8,7 +8,7 @@
 | Día 1 | 8 | Setup + MUI + user cards |
 | Día 2 | 8 | useState + forms + refs + effects |
 | Día 3 | 8 | useFetch<T> + JSONPlaceholder |
-| Día 4 | 8 | json-server + Axios + Router |
+| Día 4 | 8 | TaskFlow API + Axios + Router |
 | Día 5 | 8 | Context + theme + toast + deploy |
 
 ## Metodología por concepto
@@ -25,7 +25,7 @@ Mini-practices: **10–25 min** (demo + práctica). El slack del día absorbe br
 - **D1:** 5 user cards MUI; admins en negrita.
 - **D2:** TODO add/toggle/delete; input con focus al cargar; submit deshabilitado si vacío.
 - **D3:** `/users` y `/posts` con spinner, error, paginación y búsqueda; mismo `useFetch<T>`.
-- **D4:** CRUD persistente json-server; rutas protegidas; env vars.
+- **D4:** Login ana/ana123; CRUD proyectos/tareas contra API remota; rutas protegidas.
 - **D5:** Dark mode, toast global, error boundary; deploy público.
 
 ## Cómo usar las demos

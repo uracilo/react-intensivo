@@ -1,7 +1,0 @@
-{
-  "users": [
-    { "id": 1, "name": "Ana García", "email": "ana@example.com", "role": "admin" },
-    { "id": 2, "name": "Bruno López", "email": "bruno@example.com", "role": "developer" },
-    { "id": 3, "name": "Carla Ruiz", "email": "carla@example.com", "role": "designer" }
-  ]
-}

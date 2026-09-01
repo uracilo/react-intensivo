@@ -1,29 +1,30 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
+import { getAuthToken, loginRequest, setAuthToken } from './api/client'
 
 interface AuthContextValue {
   isAuthenticated: boolean
-  login: (username: string, password: string) => boolean
+  login: (username: string, password: string) => Promise<boolean>
   logout: () => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    () => sessionStorage.getItem('auth') === 'true',
-  )
+  const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(getAuthToken()))
 
-  function login(username: string, password: string) {
-    const ok = username === 'demo' && password === 'demo123'
-    if (ok) {
-      sessionStorage.setItem('auth', 'true')
+  async function login(username: string, password: string) {
+    try {
+      const token = await loginRequest(username, password)
+      setAuthToken(token)
       setIsAuthenticated(true)
+      return true
+    } catch {
+      return false
     }
-    return ok
   }
 
   function logout() {
-    sessionStorage.removeItem('auth')
+    setAuthToken(null)
     setIsAuthenticated(false)
   }
 

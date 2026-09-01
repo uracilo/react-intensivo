@@ -7,20 +7,18 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createUser } from '../api/usersApi'
+import { createProject } from '../api/taskflowApi'
 import { useToast } from '../context/ToastContext'
-import type { NewUser } from '../types'
 
-const empty: NewUser = { name: '', email: '', role: 'developer' }
-
-export function NewUserPage() {
+export function NewProjectPage() {
   const navigate = useNavigate()
   const { showToast } = useToast()
-  const [form, setForm] = useState<NewUser>(empty)
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
-  const valid = form.name.trim() && form.email.includes('@')
+  const valid = name.trim().length >= 3
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -28,9 +26,12 @@ export function NewUserPage() {
     setSubmitting(true)
     setError(null)
     try {
-      const created = await createUser(form)
-      showToast(`Usuario ${created.name} creado`)
-      navigate(`/users/${created.id}`)
+      const created = await createProject({
+        name: name.trim(),
+        description: description.trim() || undefined,
+      })
+      showToast(`Proyecto "${created.name}" creado`)
+      navigate(`/projects/${created.id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al crear')
     } finally {
@@ -40,7 +41,7 @@ export function NewUserPage() {
 
   return (
     <Stack spacing={2} maxWidth={480}>
-      <Typography variant="h5">Nuevo usuario</Typography>
+      <Typography variant="h5">Nuevo proyecto</Typography>
       <Card>
         <CardContent>
           {error && (
@@ -52,24 +53,18 @@ export function NewUserPage() {
             <Stack spacing={2}>
               <TextField
                 label="Nombre"
-                value={form.name}
-                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
                 fullWidth
               />
               <TextField
-                label="Email"
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                required
+                label="Descripción"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 fullWidth
-              />
-              <TextField
-                label="Rol"
-                value={form.role}
-                onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}
-                fullWidth
+                multiline
+                rows={2}
               />
               <Button type="submit" variant="contained" disabled={!valid || submitting}>
                 Crear

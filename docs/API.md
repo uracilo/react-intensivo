@@ -1,42 +1,57 @@
-# API — json-server (Días 4 y 5)
+# API — TaskFlow (Spring Boot)
 
-Base URL por defecto: `http://localhost:3001` (configurable con `VITE_API_URL`).
+**Base URL:** `http://52.87.135.237:8080`  
+**Swagger UI:** [http://52.87.135.237:8080/swagger-ui/index.html](http://52.87.135.237:8080/swagger-ui/index.html)
 
-## Arrancar
+## Autenticación (JWT)
 
-```bash
-cd demos/04-crud-router   # o demos/05-taskflow
-npm run api
-```
+1. `POST /auth/login` con body `{ "username", "password" }` → `{ "token" }`
+2. Enviar `Authorization: Bearer <token>` en el resto de endpoints
 
-## Endpoints
+Usuarios sembrados:
+
+| Usuario | Password |
+|---------|----------|
+| `ana` | `ana123` |
+| `luis` | `luis123` |
+| `admin` | `admin123` |
+
+## Endpoints principales (Días 4 y 5)
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| GET | `/users` | Lista todos los usuarios |
-| GET | `/users/:id` | Detalle de un usuario |
-| POST | `/users` | Crear usuario (body JSON) |
-| PUT | `/users/:id` | Actualizar usuario |
-| DELETE | `/users/:id` | Eliminar usuario |
+| GET | `/info` | Público — nombre y versión |
+| POST | `/auth/login` | Login → JWT |
+| GET | `/projects` | Lista proyectos |
+| POST | `/projects` | Crear proyecto |
+| GET | `/projects/{id}` | Detalle proyecto |
+| GET | `/projects/{id}/tasks` | Tareas del proyecto |
+| DELETE | `/projects/{id}` | Borrar proyecto (ADMIN o owner) |
+| GET | `/tasks` | Lista tareas (`?status=` / `?priority=`) |
+| GET | `/tasks/{id}` | Detalle tarea |
+| POST | `/projects/{projectId}/tasks` | Crear tarea |
+| PUT | `/tasks/{id}` | Reemplazar tarea |
+| PATCH | `/tasks/{id}/status` | Cambiar estado |
+| DELETE | `/tasks/{id}` | Borrar tarea |
 
-## Body ejemplo (POST)
+## Variables de entorno (frontend)
+
+Copiá `.env.example` a `.env.local` en `demos/04-crud-router` o `demos/05-taskflow`:
+
+```
+VITE_API_URL=http://52.87.135.237:8080
+```
+
+## Body ejemplo — crear tarea
 
 ```json
 {
-  "name": "Nuevo Usuario",
-  "email": "nuevo@example.com",
-  "role": "developer"
+  "title": "Maquetar la portada",
+  "description": "Primera versión desktop",
+  "priority": "HIGH",
+  "assigneeId": 2,
+  "dueDate": "2030-12-31"
 }
 ```
 
-Los datos persisten en `db.json`.
-
-## Variables de entorno
-
-Copiá `.env.example` a `.env.local`:
-
-```
-VITE_API_URL=http://localhost:3001
-```
-
-En deploy (Vercel/Netlify), configurá la misma variable en el dashboard si la API está expuesta.
+Reglas: título 3–120 chars; al crear, `dueDate` no puede ser pasada; pasar a `DONE` sin `assigneeId` → 422.

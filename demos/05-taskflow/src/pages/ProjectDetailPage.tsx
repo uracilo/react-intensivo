@@ -1,0 +1,76 @@
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Chip from '@mui/material/Chip'
+import CircularProgress from '@mui/material/CircularProgress'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom'
+import { fetchProject, fetchProjectTasks } from '../api/taskflowApi'
+import { useFetch } from '../hooks/useFetch'
+
+export function ProjectDetailPage() {
+  const { id } = useParams<{ id: string }>()
+  const projectId = Number(id)
+  const navigate = useNavigate()
+
+  const projectQuery = useFetch(() => fetchProject(projectId), [projectId])
+  const tasksQuery = useFetch(() => fetchProjectTasks(projectId), [projectId])
+
+  if (projectQuery.isLoading || tasksQuery.isLoading) {
+    return (
+      <Box display="flex" justifyContent="center" py={4}>
+        <CircularProgress />
+      </Box>
+    )
+  }
+
+  if (projectQuery.error || !projectQuery.data) {
+    return <Alert severity="error">{projectQuery.error?.message ?? 'No encontrado'}</Alert>
+  }
+
+  const project = projectQuery.data
+  const tasks = tasksQuery.data ?? []
+
+  return (
+    <Stack spacing={2} maxWidth={640}>
+      <Button onClick={() => navigate(-1)} aria-label="Volver atrás">
+        ← Volver
+      </Button>
+      <Typography variant="h5">{project.name}</Typography>
+      <Typography color="text.secondary">{project.description}</Typography>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography variant="h6">Tareas ({tasks.length})</Typography>
+        <Button
+          component={RouterLink}
+          to={`/tasks/new?projectId=${project.id}`}
+          variant="outlined"
+        >
+          Nueva tarea
+        </Button>
+      </Stack>
+      {!tasks.length && (
+        <Typography color="text.secondary">Este proyecto no tiene tareas.</Typography>
+      )}
+      {tasks.map((task) => (
+        <Card
+          key={task.id}
+          component={RouterLink}
+          to={`/tasks/${task.id}`}
+          sx={{ textDecoration: 'none', color: 'inherit' }}
+        >
+          <CardContent>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
+                {task.title}
+              </Typography>
+              <Chip label={task.status} size="small" />
+            </Stack>
+          </CardContent>
+        </Card>
+      ))}
+    </Stack>
+  )
+}
