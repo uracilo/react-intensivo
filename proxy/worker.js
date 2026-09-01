@@ -2,7 +2,7 @@
  * Cloudflare Worker — proxy HTTPS → TaskFlow API (HTTP)
  * URL: https://taskflow-proxy.<account>.workers.dev
  */
-const API_ORIGIN = 'http://52.87.135.237:8080'
+const API_ORIGIN = 'https://52.87.135.237:8080'
 
 export default {
   async fetch(request) {

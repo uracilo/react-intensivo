@@ -38,15 +38,6 @@ export function LoginPage() {
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         API: {API_URL}
       </Typography>
-      {window.location.protocol === 'https:' && API_URL.startsWith('http://') && (
-        <Alert severity="warning" sx={{ mb: 2 }}>
-          GitHub Pages (HTTPS) no puede llamar la API HTTP directamente.
-          Configurá el proxy Cloudflare — instrucciones en{' '}
-          <a href="https://github.com/uracilo/react-intensivo/blob/main/proxy/README.md">
-            proxy/README.md
-          </a>
-        </Alert>
-      )}
       <form onSubmit={handleSubmit}>
         <Stack spacing={2}>
           {error && <Alert severity="error">{error}</Alert>}

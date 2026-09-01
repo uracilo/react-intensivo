@@ -1,7 +1,7 @@
 # API — TaskFlow (Spring Boot)
 
-**Base URL:** `http://52.87.135.237:8080`  
-**Swagger UI:** [http://52.87.135.237:8080/swagger-ui/index.html](http://52.87.135.237:8080/swagger-ui/index.html)
+**Base URL:** `https://52.87.135.237:8080`  
+**Swagger UI:** [https://52.87.135.237:8080/swagger-ui/index.html](https://52.87.135.237:8080/swagger-ui/index.html)
 
 ## Autenticación (JWT)
 
@@ -39,7 +39,7 @@ Usuarios sembrados:
 Copiá `.env.example` a `.env.local` en `demos/04-crud-router` o `demos/05-taskflow`:
 
 ```
-VITE_API_URL=http://52.87.135.237:8080
+VITE_API_URL=https://52.87.135.237:8080
 ```
 
 ## Body ejemplo — crear tarea

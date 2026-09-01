@@ -1,6 +1,6 @@
 # Proxy HTTPS para GitHub Pages
 
-GitHub Pages es **HTTPS** y no puede llamar a `http://52.87.135.237:8080` directamente.
+GitHub Pages es **HTTPS** y consume la API en `https://52.87.135.237:8080`.
 
 Este **Cloudflare Worker** expone la API por HTTPS (gratis).
 
