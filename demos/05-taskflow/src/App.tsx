@@ -1,7 +1,7 @@
 import CssBaseline from '@mui/material/CssBaseline'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useMemo } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth'
 import { ThemeModeProvider, useThemeMode } from './context/ThemeContext'
 import { ToastProvider } from './context/ToastContext'
@@ -31,7 +31,7 @@ function ThemedApp() {
       <CssBaseline />
       <ToastProvider>
         <AuthProvider>
-          <BrowserRouter>
+          <HashRouter>
             <ErrorBoundary>
               <Routes>
                 <Route path="/login" element={<LoginPage />} />
@@ -49,7 +49,7 @@ function ThemedApp() {
                 <Route path="*" element={<Navigate to="/projects" replace />} />
               </Routes>
             </ErrorBoundary>
-          </BrowserRouter>
+          </HashRouter>
         </AuthProvider>
       </ToastProvider>
     </ThemeProvider>

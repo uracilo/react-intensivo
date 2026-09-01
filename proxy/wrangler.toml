@@ -1,0 +1,6 @@
+name = "taskflow-proxy"
+main = "worker.js"
+compatibility_date = "2024-08-01"
+
+[vars]
+# Documentación — el origin real está en worker.js
