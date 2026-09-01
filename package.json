@@ -2,7 +2,7 @@
   "name": "react-intensivo",
   "private": true,
   "version": "1.0.0",
-  "description": "Curso intensivo React + TypeScript — TaskFlow (demos progresivas)",
+  "description": "Curso intensivo React + TypeScript + MUI — demos progresivas alineadas al temario",
   "scripts": {
     "dev:01": "npm run dev --prefix demos/01-fundamentos",
     "dev:02": "npm run dev --prefix demos/02-estado",

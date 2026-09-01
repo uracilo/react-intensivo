@@ -1,48 +1,121 @@
-import { useState } from 'react'
-import type { NewTask, Task } from './types'
-import { MOCK_TASKS } from './types'
-import { TaskCard } from './TaskCard'
-import { TaskForm } from './TaskForm'
+import DeleteIcon from '@mui/icons-material/Delete'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Checkbox from '@mui/material/Checkbox'
+import Container from '@mui/material/Container'
+import CssBaseline from '@mui/material/CssBaseline'
+import IconButton from '@mui/material/IconButton'
+import List from '@mui/material/List'
+import ListItemText from '@mui/material/ListItemText'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
+import { useEffect, useRef, useState } from 'react'
+import { StyledListItem } from './StyledListItem'
+import type { TodoItem } from './types'
+
+const theme = createTheme()
 
 export default function App() {
-  const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS)
+  const [items, setItems] = useState<TodoItem[]>([
+    { id: 1, text: 'Instalar MUI', done: true },
+    { id: 2, text: 'Practicar useState', done: false },
+  ])
+  const [text, setText] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  function handleAdd(data: NewTask) {
-    setTasks((prev) => {
-      const id = Math.max(0, ...prev.map((t) => t.id)) + 1
-      return [{ ...data, id }, ...prev]
-    })
+  useEffect(() => {
+    inputRef.current?.focus()
+  }, [])
+
+  const trimmed = text.trim()
+  const canAdd = trimmed.length > 0
+
+  function handleAdd() {
+    if (!canAdd) return
+    setItems((prev) => [
+      ...prev,
+      { id: Date.now(), text: trimmed, done: false },
+    ])
+    setText('')
+    inputRef.current?.focus()
+  }
+
+  function handleToggle(id: number) {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, done: !item.done } : item,
+      ),
+    )
   }
 
   function handleDelete(id: number) {
-    setTasks((prev) => prev.filter((t) => t.id !== id))
+    setItems((prev) => prev.filter((item) => item.id !== id))
   }
 
   return (
-    <div className="app-shell">
-      <header className="site-header">
-        <div className="brand">
-          <span className="brand-mark">TF</span>
-          <div>
-            <h1>TaskFlow</h1>
-            <p className="tagline">Día 2 — useState, formularios y validación</p>
-          </div>
-        </div>
-      </header>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={{ bgcolor: 'grey.50', minHeight: '100vh', py: 4 }}>
+        <Container maxWidth="sm">
+          <Typography variant="h4" gutterBottom>
+            Día 2 — TODO con MUI
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            useState, formularios controlados, useRef (autofocus) y styled()
+          </Typography>
 
-      <section className="panel">
-        <h2>Nueva tarea</h2>
-        <TaskForm onAdd={handleAdd} />
-      </section>
+          <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
+            <TextField
+              inputRef={inputRef}
+              fullWidth
+              label="Nueva tarea"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+            />
+            <Button
+              variant="contained"
+              onClick={handleAdd}
+              disabled={!canAdd}
+              sx={{ whiteSpace: 'nowrap' }}
+            >
+              Agregar
+            </Button>
+          </Stack>
 
-      <section className="panel">
-        <h2>Tareas ({tasks.length})</h2>
-        <div className="grid">
-          {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} onDelete={handleDelete} />
-          ))}
-        </div>
-      </section>
-    </div>
+          <List disablePadding>
+            {items.map((item) => (
+              <StyledListItem
+                key={item.id}
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    aria-label={`Eliminar ${item.text}`}
+                    onClick={() => handleDelete(item.id)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              >
+                <Checkbox
+                  checked={item.done}
+                  onChange={() => handleToggle(item.id)}
+                  inputProps={{ 'aria-label': `Marcar ${item.text}` }}
+                />
+                <ListItemText
+                  primary={item.text}
+                  sx={{
+                    textDecoration: item.done ? 'line-through' : 'none',
+                    color: item.done ? 'text.secondary' : 'text.primary',
+                  }}
+                />
+              </StyledListItem>
+            ))}
+          </List>
+        </Container>
+      </Box>
+    </ThemeProvider>
   )
 }

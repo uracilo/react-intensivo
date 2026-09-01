@@ -1,33 +1,45 @@
-import { Link, NavLink, Navigate, Outlet } from 'react-router-dom'
+import DarkModeIcon from '@mui/icons-material/DarkMode'
+import LightModeIcon from '@mui/icons-material/LightMode'
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container'
+import IconButton from '@mui/material/IconButton'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import { Link as RouterLink, Outlet } from 'react-router-dom'
 import { useAuth } from './auth'
-
-export function RequireAuth() {
-  const { isAuthenticated } = useAuth()
-  if (!isAuthenticated) return <Navigate to="/login" replace />
-  return <Outlet />
-}
+import { useThemeMode } from './context/ThemeContext'
 
 export function Layout() {
-  const { user, logout } = useAuth()
+  const { logout } = useAuth()
+  const { mode, toggleTheme } = useThemeMode()
+
   return (
-    <div className="app-shell">
-      <header className="site-header">
-        <Link to="/dashboard" className="brand" style={{ color: 'inherit', textDecoration: 'none' }}>
-          <span className="brand-mark">TF</span>
-          <div>
-            <h1>TaskFlow</h1>
-            <p className="tagline">Día 5 — JWT + API · {user?.username}</p>
-          </div>
-        </Link>
-        <nav className="nav">
-          <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink to="/tasks">Tareas</NavLink>
-          <button type="button" className="btn ghost" onClick={logout}>
-            Salir
-          </button>
-        </nav>
-      </header>
-      <Outlet />
-    </div>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+      <AppBar position="static" elevation={1}>
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Día 5 — Users App
+          </Typography>
+          <Button component={RouterLink} to="/users" color="inherit">
+            Users
+          </Button>
+          <IconButton
+            color="inherit"
+            aria-label={mode === 'light' ? 'Activar modo oscuro' : 'Activar modo claro'}
+            onClick={toggleTheme}
+          >
+            {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+          </IconButton>
+          <Button color="inherit" onClick={logout} sx={{ ml: 1 }}>
+            Logout
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <Container sx={{ py: 3 }}>
+        <Outlet />
+      </Container>
+    </Box>
   )
 }

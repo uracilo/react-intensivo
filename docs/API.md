@@ -1,100 +1,42 @@
-# TaskFlow — Contrato API
+# API — json-server (Días 4 y 5)
 
-El frontend consume la **misma API** que construyen en Backend (Spring Boot).
+Base URL por defecto: `http://localhost:3001` (configurable con `VITE_API_URL`).
 
-- **Base URL local:** `http://localhost:8080`
-- **Swagger:** `http://localhost:8080/swagger-ui.html`
+## Arrancar
 
-## Dominio
-
-Entidades: **User**, **Project**, **Task**.
-
-### Usuarios seed
-
-| username | role  | password |
-|----------|-------|----------|
-| `ana`    | USER  | `ana123` |
-| `luis`   | USER  | `luis123` |
-| `admin`  | ADMIN | `admin123` |
-
-### Proyectos seed
-
-- Plataforma TaskFlow (owner: ana)
-- App Móvil (owner: luis)
-- Migración Legacy (owner: ana)
-
-## Modelos TypeScript
-
-```typescript
-type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE'
-type Priority = 'HIGH' | 'MEDIUM' | 'LOW'
-type Role = 'USER' | 'ADMIN'
-
-interface User { id: number; username: string; role: Role }
-interface Project { id: number; name: string; ownerId: number }
-interface Task {
-  id: number
-  title: string
-  description: string
-  status: TaskStatus
-  priority: Priority
-  dueDate: string
-  projectId: number
-  assigneeId: number | null
-}
+```bash
+cd demos/04-crud-router   # o demos/05-taskflow
+npm run api
 ```
-
-### Reglas de negocio (validar también en UI)
-
-- Título: **3–120** caracteres → 400
-- `dueDate` no puede ser pasada al **crear** → 400
-- No marcar `DONE` sin `assigneeId` → 422
 
 ## Endpoints
 
-### Auth
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/users` | Lista todos los usuarios |
+| GET | `/users/:id` | Detalle de un usuario |
+| POST | `/users` | Crear usuario (body JSON) |
+| PUT | `/users/:id` | Actualizar usuario |
+| DELETE | `/users/:id` | Eliminar usuario |
 
-```
-POST /auth/login   { username, password }  →  { token, ... }
-```
+## Body ejemplo (POST)
 
-Header: `Authorization: Bearer {token}`
-
-### Projects
-
-```
-GET    /projects
-GET    /projects/{id}
-POST   /projects
-PUT    /projects/{id}
-DELETE /projects/{id}
-```
-
-### Tasks
-
-```
-GET    /tasks?status=TODO|IN_PROGRESS|DONE
-GET    /tasks/{id}
-GET    /projects/{id}/tasks
-POST   /projects/{id}/tasks
-PUT    /tasks/{id}
-PATCH  /tasks/{id}/status
-DELETE /tasks/{id}
+```json
+{
+  "name": "Nuevo Usuario",
+  "email": "nuevo@example.com",
+  "role": "developer"
+}
 ```
 
-## Variables de entorno (Día 5)
+Los datos persisten en `db.json`.
 
-```bash
-VITE_API_URL=http://localhost:8080
-VITE_USE_API=true
+## Variables de entorno
+
+Copiá `.env.example` a `.env.local`:
+
+```
+VITE_API_URL=http://localhost:3001
 ```
 
-Si la API no responde, la demo final usa **fallback localStorage**.
-
-## data-testid (QE)
-
-| Elemento | test id |
-|----------|---------|
-| Login form | `login-form` |
-| Projects list | `projects-list` |
-| Status filter | `status-filter` |
+En deploy (Vercel/Netlify), configurá la misma variable en el dashboard si la API está expuesta.

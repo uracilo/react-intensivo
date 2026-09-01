@@ -1,23 +1,28 @@
-import { MOCK_TASKS } from './types'
-import { TaskGrid } from './TaskGrid'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+import CssBaseline from '@mui/material/CssBaseline'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
+import { MOCK_USERS } from './types'
+import { UserGrid } from './UserGrid'
+
+const theme = createTheme()
 
 export default function App() {
   return (
-    <div className="app-shell">
-      <header className="site-header">
-        <div className="brand">
-          <span className="brand-mark">TF</span>
-          <div>
-            <h1>TaskFlow</h1>
-            <p className="tagline">Día 1 — Componentes y TypeScript (UI estática)</p>
-          </div>
-        </div>
-      </header>
-
-      <section className="panel">
-        <h2>Tareas seed ({MOCK_TASKS.length})</h2>
-        <TaskGrid tasks={MOCK_TASKS} />
-      </section>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={{ bgcolor: 'grey.50', minHeight: '100vh', py: 4 }}>
+        <Container maxWidth="md">
+          <Typography variant="h4" gutterBottom>
+            Día 1 — User Cards con MUI
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Componentes tipados, props, listas con key y layout con Stack / Card / Avatar
+          </Typography>
+          <UserGrid users={MOCK_USERS} />
+        </Container>
+      </Box>
+    </ThemeProvider>
   )
 }
