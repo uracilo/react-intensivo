@@ -1,6 +1,6 @@
 import { createServer } from 'node:http'
 
-const API = 'http://52.87.135.237:8080'
+const API = 'https://d3ujwk09smrk9z.cloudfront.net'
 const PORT = process.env.PORT || 3000
 
 const server = createServer(async (req, res) => {
@@ -8,6 +8,12 @@ const server = createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', origin)
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+
+  if (req.url === '/info') {
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({ proxy: true, target: API }))
+    return
+  }
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204)

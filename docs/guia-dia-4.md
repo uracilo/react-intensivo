@@ -1,7 +1,7 @@
 # Guía Día 4 — TaskFlow API + Axios + React Router
 
 **Demo:** [`demos/04-crud-router/`](../demos/04-crud-router/)  
-**API:** [Swagger UI](https://52.87.135.237:8080/swagger-ui/index.html) · [`docs/API.md`](API.md)  
+**API:** [Swagger UI](https://d3ujwk09smrk9z.cloudfront.net/swagger-ui/index.html) · [`docs/API.md`](API.md)  
 **Tiempo:** ~8 h (~6 h contenido + ~2 h slack)
 
 ## Topics
@@ -14,7 +14,7 @@
 
 ## Integrador (~1.25 h)
 
-App contra `https://52.87.135.237:8080`:
+App contra `https://d3ujwk09smrk9z.cloudfront.net`:
 
 - Login `ana` / `ana123`
 - `/projects`, `/projects/:id`, `/projects/new`

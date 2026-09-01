@@ -1,12 +1,13 @@
 import axios from 'axios'
-import { API_URL, TOKEN_KEY } from '../types'
+import { getApiBaseUrl } from '../config/apiUrl'
+import { TOKEN_KEY } from '../types'
 
 export const apiClient = axios.create({
-  baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
 })
 
 apiClient.interceptors.request.use((config) => {
+  config.baseURL = getApiBaseUrl()
   const token = localStorage.getItem(TOKEN_KEY)
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
@@ -24,9 +25,13 @@ export function getAuthToken(): string | null {
 }
 
 export function getApiErrorMessage(err: unknown): string {
+  const api = getApiBaseUrl()
   if (axios.isAxiosError(err)) {
     if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
-      return `No se pudo conectar con la API (${API_URL}). Si estás en GitHub Pages, la API necesita un proxy HTTPS — ver proxy/README.md en el repo.`
+      if (api.startsWith('http://') && window.location.protocol === 'https:') {
+        return `No se pudo conectar. GitHub Pages (HTTPS) no puede llamar a una API HTTP (${api}). Usá una URL HTTPS válida abajo o desplegá el proxy (proxy/README.md).`
+      }
+      return `No se pudo conectar con la API (${api}). Verificá la URL y que el servidor esté activo.`
     }
     if (err.response?.status === 401) {
       return 'Usuario o contraseña incorrectos.'
@@ -38,9 +43,9 @@ export function getApiErrorMessage(err: unknown): string {
 }
 
 export async function loginRequest(username: string, password: string): Promise<string> {
-  const { data } = await axios.post<{ token: string }>(`${API_URL}/auth/login`, {
-    username: username.trim(),
-    password,
-  })
+  const { data } = await axios.post<{ token: string }>(
+    `${getApiBaseUrl()}/auth/login`,
+    { username: username.trim(), password },
+  )
   return data.token
 }

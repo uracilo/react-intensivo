@@ -63,8 +63,8 @@ jobs:
           elif [ -n "$FALLBACK" ]; then
             echo "url=$FALLBACK" >> "$GITHUB_OUTPUT"
           else
-            echo "url=http://52.87.135.237:8080" >> "$GITHUB_OUTPUT"
-            echo "::warning::Sin proxy HTTPS — demos 04/05 no tendrán login en GitHub Pages. Ver proxy/README.md"
+            echo "url=https://d3ujwk09smrk9z.cloudfront.net" >> "$GITHUB_OUTPUT"
+            echo "::warning::Sin proxy HTTPS configurado. Usando API CloudFront por defecto."
           fi
 
       - name: Install demos

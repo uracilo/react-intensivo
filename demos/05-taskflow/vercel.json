@@ -8,7 +8,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://52.87.135.237:8080/$1"
+      "destination": "https://d3ujwk09smrk9z.cloudfront.net/$1"
     }
   ]
 }

@@ -3,6 +3,7 @@ services:
     name: taskflow-proxy
     runtime: node
     plan: free
+    rootDir: proxy
     buildCommand: echo "no build"
     startCommand: node server.mjs
     healthCheckPath: /info

@@ -24,7 +24,7 @@ Guías paso a paso: [`docs/`](docs/) · Temario: [`docs/TEMARIO.md`](docs/TEMARI
 - Node.js 20+
 - npm 10+
 - Navegador moderno
-- (Días 4–5) API TaskFlow en `https://52.87.135.237:8080` — ver [Swagger](https://52.87.135.237:8080/swagger-ui/index.html)
+- (Días 4–5) API TaskFlow en `https://d3ujwk09smrk9z.cloudfront.net` — ver [Swagger](https://d3ujwk09smrk9z.cloudfront.net/swagger-ui/index.html)
 
 ## Cómo empezar
 
@@ -50,13 +50,9 @@ npm run dev:05   # app final + theme + toast
 
 ### Login en GitHub Pages (Días 4 y 5)
 
-La API solo funciona por **HTTP** (`http://52.87.135.237:8080`). GitHub Pages es **HTTPS**, así que hace falta un **proxy HTTPS** (gratis). Ver [`proxy/README.md`](proxy/README.md).
+La API está en **HTTPS** vía CloudFront (`https://d3ujwk09smrk9z.cloudfront.net`), compatible con GitHub Pages sin proxy.
 
-**Setup rápido (Render, ~5 min):**
-1. [render.com](https://render.com) → New Blueprint → conectar este repo
-2. Copiar URL del servicio `taskflow-proxy`
-3. GitHub → Settings → Variables → `TASKFLOW_PROXY_URL` = esa URL
-4. Actions → Deploy GitHub Pages → Run workflow
+Si cambiás de endpoint, podés editar la URL en la pantalla de login o definir `VITE_API_URL` en el workflow de deploy.
 
 Credenciales: **ana** / **ana123**
 

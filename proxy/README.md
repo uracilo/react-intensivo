@@ -1,9 +1,15 @@
-# Proxy HTTPS → TaskFlow API (HTTP)
+# Proxy HTTPS (opcional)
 
-GitHub Pages es **HTTPS** y la API real solo responde por **HTTP** en `http://52.87.135.237:8080`.  
-El certificado en `https://52.87.135.237:8080` **no funciona** (error TLS). Por eso hace falta un proxy HTTPS.
+La API oficial ya está en **HTTPS** vía CloudFront:
 
-## Opción A — Cloudflare Worker (recomendado, gratis)
+**https://d3ujwk09smrk9z.cloudfront.net**  
+Swagger: [swagger-ui/index.html](https://d3ujwk09smrk9z.cloudfront.net/swagger-ui/index.html)
+
+GitHub Pages y las demos 04/05 usan esa URL por defecto — **no hace falta proxy** en condiciones normales.
+
+Esta carpeta queda por si necesitás un proxy alternativo (otro backend HTTP, entorno aislado, etc.).
+
+## Opción A — Cloudflare Worker
 
 1. Cuenta en [Cloudflare](https://dash.cloudflare.com/sign-up)
 2. [API Token](https://dash.cloudflare.com/profile/api-tokens) → **Edit Cloudflare Workers**
@@ -17,29 +23,11 @@ El certificado en `https://52.87.135.237:8080` **no funciona** (error TLS). Por 
 
 5. **Actions → Deploy GitHub Pages → Run workflow**
 
-El worker queda en `https://taskflow-proxy.<cuenta>.workers.dev` y el build lo usa automáticamente.
+## Opción B — Render
 
-## Opción B — Render (gratis)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/uracilo/react-intensivo)
 
-1. [render.com](https://render.com) → New → Blueprint → conectá el repo
-2. Usa `render.yaml` (servicio `taskflow-proxy`)
-3. Copiá la URL pública (ej. `https://taskflow-proxy.onrender.com`)
-4. En GitHub → **Settings → Variables → Actions**:
-
-| Variable | Valor |
-|----------|-------|
-| `TASKFLOW_PROXY_URL` | URL de Render |
-
-5. **Actions → Deploy GitHub Pages → Run workflow**
-
-## Opción C — Vercel
-
-```bash
-cd proxy
-npx vercel --prod
-```
-
-Copiá la URL y ponela en `TASKFLOW_PROXY_URL`.
+Copiá la URL y ponela en `TASKFLOW_PROXY_URL` (GitHub Variables) para override en el build.
 
 ## Probar proxy local
 
