@@ -63,8 +63,8 @@ jobs:
           elif [ -n "$FALLBACK" ]; then
             echo "url=$FALLBACK" >> "$GITHUB_OUTPUT"
           else
-            echo "::error::Falta proxy HTTPS. Configurá CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID en GitHub Secrets, o la variable TASKFLOW_PROXY_URL (URL Render/Vercel). Ver proxy/README.md"
-            exit 1
+            echo "url=http://52.87.135.237:8080" >> "$GITHUB_OUTPUT"
+            echo "::warning::Sin proxy HTTPS — demos 04/05 no tendrán login en GitHub Pages. Ver proxy/README.md"
           fi
 
       - name: Install demos
