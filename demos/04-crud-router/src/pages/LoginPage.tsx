@@ -21,12 +21,12 @@ export function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    const ok = await login(username, password)
+    const result = await login(username, password)
     setLoading(false)
-    if (ok) {
+    if (result.success) {
       navigate('/projects')
     } else {
-      setError('Credenciales inválidas. Probá ana / ana123')
+      setError(result.error ?? 'No se pudo iniciar sesión.')
     }
   }
 
@@ -38,6 +38,12 @@ export function LoginPage() {
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         API: {API_URL}
       </Typography>
+      {window.location.protocol === 'https:' && (
+        <Alert severity="warning" sx={{ mb: 2 }}>
+          Estás en HTTPS (ej. GitHub Pages). El navegador bloquea llamadas a la API HTTP.
+          Ejecutá localmente: <code>npm run dev:04</code>
+        </Alert>
+      )}
       <form onSubmit={handleSubmit}>
         <Stack spacing={2}>
           {error && <Alert severity="error">{error}</Alert>}

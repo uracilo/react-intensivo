@@ -1,9 +1,14 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
-import { getAuthToken, loginRequest, setAuthToken } from './api/client'
+import { getApiErrorMessage, getAuthToken, loginRequest, setAuthToken } from './api/client'
+
+interface LoginResult {
+  success: boolean
+  error?: string
+}
 
 interface AuthContextValue {
   isAuthenticated: boolean
-  login: (username: string, password: string) => Promise<boolean>
+  login: (username: string, password: string) => Promise<LoginResult>
   logout: () => void
 }
 
@@ -12,14 +17,14 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(getAuthToken()))
 
-  async function login(username: string, password: string) {
+  async function login(username: string, password: string): Promise<LoginResult> {
     try {
       const token = await loginRequest(username, password)
       setAuthToken(token)
       setIsAuthenticated(true)
-      return true
-    } catch {
-      return false
+      return { success: true }
+    } catch (err) {
+      return { success: false, error: getApiErrorMessage(err) }
     }
   }
 
