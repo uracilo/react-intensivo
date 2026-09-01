@@ -41,10 +41,17 @@ export function LoginPage() {
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         API: {API_URL}
       </Typography>
-      {window.location.protocol === 'https:' && (
+      {window.location.protocol === 'https:' && !API_URL.startsWith('/api') && (
         <Alert severity="warning" sx={{ mb: 2 }}>
-          Estás en HTTPS (ej. GitHub Pages). El navegador bloquea llamadas a la API HTTP.
-          Ejecutá localmente: <code>npm run dev:05</code>
+          Estás en HTTPS (GitHub Pages). El navegador bloquea la API HTTP directa.
+          <br />
+          <strong>Opción 1 — local (recomendado):</strong>
+          <Box component="pre" sx={{ mt: 1, p: 1, bgcolor: 'grey.100', fontSize: 12, overflow: 'auto' }}>
+            {`cd react-intensivo\nnpm run install:demos\nnpm run dev:05`}
+          </Box>
+          Abrí: <code>http://localhost:5173/react-intensivo/05/</code>
+          <br />
+          <strong>Opción 2:</strong> deploy en Vercel (usa proxy /api automático).
         </Alert>
       )}
       <form onSubmit={handleSubmit}>

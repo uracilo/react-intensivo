@@ -31,6 +31,9 @@ jobs:
         run: npm run install:demos
 
       - name: Build site
+        env:
+          # Set repo variable TASKFLOW_PROXY_URL (HTTPS proxy) for login on GitHub Pages
+          VITE_API_URL: ${{ vars.TASKFLOW_PROXY_URL }}
         run: npm run build:site
 
       - uses: actions/upload-pages-artifact@v3

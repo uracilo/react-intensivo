@@ -55,7 +55,13 @@ Usuario: ana
 Password: ana123
 ```
 
-API: `http://52.87.135.237:8080` — [Swagger UI](http://52.87.135.237:8080/swagger-ui/index.html)
+API: `http://52.87.135.237:8080` · [Swagger UI](http://52.87.135.237:8080/swagger-ui/index.html)
+
+**GitHub Pages (HTTPS)** no puede llamar la API HTTP directamente. Opciones:
+
+1. **Local:** `npm run dev:05` → `http://localhost:5173/react-intensivo/05/`
+2. **Vercel:** agregar `VERCEL_TOKEN` en GitHub Secrets → deploy automático con proxy `/api`
+3. **Variable de repo:** `TASKFLOW_PROXY_URL` (URL HTTPS del proxy) para login en GitHub Pages
 
 ## Documentación
 

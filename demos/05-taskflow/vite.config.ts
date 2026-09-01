@@ -1,9 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+const base = process.env.VERCEL ? '/' : '/react-intensivo/05/'
+
 export default defineConfig({
   plugins: [react()],
-  base: '/react-intensivo/05/',
+  base,
   server: {
     proxy: {
       '/api': {

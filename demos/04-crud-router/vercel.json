@@ -1,0 +1,14 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "env": {
+    "VITE_API_URL": "/api"
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "http://52.87.135.237:8080/$1"
+    }
+  ]
+}
