@@ -26,10 +26,7 @@ export function getAuthToken(): string | null {
 export function getApiErrorMessage(err: unknown): string {
   if (axios.isAxiosError(err)) {
     if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
-      if (window.location.protocol === 'https:') {
-        return 'No se puede conectar: la demo en HTTPS no puede llamar a la API HTTP. Ejecutá npm run dev:04 en tu máquina.'
-      }
-      return `No se pudo conectar con la API (${API_URL}). Verificá que el servidor esté activo.`
+      return `No se pudo conectar con la API (${API_URL}). Si estás en GitHub Pages, la API necesita un proxy HTTPS — ver proxy/README.md en el repo.`
     }
     if (err.response?.status === 401) {
       return 'Usuario o contraseña incorrectos.'

@@ -48,16 +48,17 @@ npm run dev:04   # CRUD TaskFlow + router
 npm run dev:05   # app final + theme + toast
 ```
 
-### Login TaskFlow (Días 4 y 5)
+### Login en GitHub Pages (Días 4 y 5)
 
-```
-Usuario: ana
-Password: ana123
-```
+La API solo funciona por **HTTP** (`http://52.87.135.237:8080`). GitHub Pages es **HTTPS**, así que hace falta un **proxy HTTPS** (gratis). Ver [`proxy/README.md`](proxy/README.md).
 
-API: `https://52.87.135.237:8080` · [Swagger UI](https://52.87.135.237:8080/swagger-ui/index.html)
+**Setup rápido (Render, ~5 min):**
+1. [render.com](https://render.com) → New Blueprint → conectar este repo
+2. Copiar URL del servicio `taskflow-proxy`
+3. GitHub → Settings → Variables → `TASKFLOW_PROXY_URL` = esa URL
+4. Actions → Deploy GitHub Pages → Run workflow
 
-GitHub Pages: https://uracilo.github.io/react-intensivo/04/#/login · https://uracilo.github.io/react-intensivo/05/#/login
+Credenciales: **ana** / **ana123**
 
 ## Documentación
 

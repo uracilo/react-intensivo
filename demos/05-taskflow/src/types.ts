@@ -39,6 +39,6 @@ export interface AuthResponse {
 }
 
 export const API_URL =
-  import.meta.env.VITE_API_URL || 'https://52.87.135.237:8080'
+  import.meta.env.VITE_API_URL || 'http://52.87.135.237:8080'
 
 export const TOKEN_KEY = 'taskflow-token'

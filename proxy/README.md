@@ -1,32 +1,49 @@
-# Proxy HTTPS para GitHub Pages
+# Proxy HTTPS → TaskFlow API (HTTP)
 
-GitHub Pages es **HTTPS** y consume la API en `https://52.87.135.237:8080`.
+GitHub Pages es **HTTPS** y la API real solo responde por **HTTP** en `http://52.87.135.237:8080`.  
+El certificado en `https://52.87.135.237:8080` **no funciona** (error TLS). Por eso hace falta un proxy HTTPS.
 
-Este **Cloudflare Worker** expone la API por HTTPS (gratis).
+## Opción A — Cloudflare Worker (recomendado, gratis)
 
-## Setup (una sola vez, ~3 min)
-
-1. Creá cuenta en [Cloudflare](https://dash.cloudflare.com/sign-up)
-2. [API Tokens](https://dash.cloudflare.com/profile/api-tokens) → **Create Token** → plantilla **Edit Cloudflare Workers**
-3. Copiá tu **Account ID** (dashboard derecha)
-4. En GitHub repo → **Settings → Secrets and variables → Actions**:
+1. Cuenta en [Cloudflare](https://dash.cloudflare.com/sign-up)
+2. [API Token](https://dash.cloudflare.com/profile/api-tokens) → **Edit Cloudflare Workers**
+3. Copiá tu **Account ID** (panel derecho)
+4. En GitHub → **Settings → Secrets and variables → Actions**:
 
 | Secret | Valor |
 |--------|-------|
-| `CLOUDFLARE_API_TOKEN` | el token |
-| `CLOUDFLARE_ACCOUNT_ID` | tu account id |
+| `CLOUDFLARE_API_TOKEN` | token |
+| `CLOUDFLARE_ACCOUNT_ID` | account id |
 
-5. Push a `main` o ejecutá **Actions → Deploy GitHub Pages**
+5. **Actions → Deploy GitHub Pages → Run workflow**
 
-El workflow despliega el worker y rebuilda las demos 04/05 con la URL HTTPS del proxy.
+El worker queda en `https://taskflow-proxy.<cuenta>.workers.dev` y el build lo usa automáticamente.
 
-## Deploy manual
+## Opción B — Render (gratis)
+
+1. [render.com](https://render.com) → New → Blueprint → conectá el repo
+2. Usa `render.yaml` (servicio `taskflow-proxy`)
+3. Copiá la URL pública (ej. `https://taskflow-proxy.onrender.com`)
+4. En GitHub → **Settings → Variables → Actions**:
+
+| Variable | Valor |
+|----------|-------|
+| `TASKFLOW_PROXY_URL` | URL de Render |
+
+5. **Actions → Deploy GitHub Pages → Run workflow**
+
+## Opción C — Vercel
 
 ```bash
 cd proxy
-npm install
-npx wrangler login
-npx wrangler deploy
+npx vercel --prod
 ```
 
-Copiá la URL `https://taskflow-proxy.<tu-cuenta>.workers.dev` y agregala como variable de repo `TASKFLOW_PROXY_URL`.
+Copiá la URL y ponela en `TASKFLOW_PROXY_URL`.
+
+## Probar proxy local
+
+```bash
+cd proxy && node server.mjs
+# POST http://localhost:3000/auth/login
+```
