@@ -1,439 +1,137 @@
-Guía Día 3 — CRUD con fetch, cuatro estados y custom hooks
+# Guía Día 3 — CRUD con fetch, cuatro estados y custom hooks
 
-Demo: [demos/03-datos/](../demos/03-datos/)
-Tiempo estimado: 8 horas — ~5 h contenido + ~3 h pausas y práctica.
+**Demo:** [`demos/03-datos/`](../demos/03-datos/)  
+**Tiempo estimado:** 8 horas — ~5 h contenido + ~3 h pausas y práctica.
 
-Construirás una app CRUD contra JSONPlaceholder: listar, crear, editar y eliminar usuarios y publicaciones.
+Construirás una app CRUD contra [JSONPlaceholder](https://jsonplaceholder.typicode.com/): listar, crear, editar y eliminar **usuarios** y **publicaciones**.
 
+```text
 Servicio → Hook → Página → App.tsx (conectás en cada fase)
+```
 
+> Si querés construirlo desde cero, seguí la [Guía paso a paso — desde cero](#guía-paso-a-paso--desde-cero).
 
+## Cómo ejecutarlo
 
-Si querés construirlo desde cero, seguí la Guía paso a paso — desde cero.
-
-Cómo ejecutarlo
-
+```bash
 cd demos/03-datos   # o dia-3-datos
 npm install
 npm run dev
+```
 
+---
 
+## Qué vas a construir
 
-Qué vas a construir
+| Ruta | CRUD | API |
+| --- | --- | --- |
+| `/users` | Listar · Crear · Editar · Eliminar | `GET/POST/PUT/DELETE /users` |
+| `/posts` | Listar · Crear · Editar · Eliminar | `GET/POST/PUT/DELETE /posts` |
 
+> JSONPlaceholder **no persiste** en el servidor. Actualizás el estado **local** tras cada POST/PUT/DELETE.
 
+---
 
+## Conceptos clave
 
+### Tres capas
 
+| Capa | Carpeta | Pregunta |
+| --- | --- | --- |
+| Servicio | `services/` | ¿Cómo hablo con la API? |
+| Hook | `hooks/` | ¿Cuándo pido datos y manejo loading/error? |
+| Página | `pages/` | ¿Qué ve el usuario? |
 
+### Cuatro estados
 
-Ruta
-
-
-
-CRUD
-
-
-
-API
-
-
-
-
-
-/users
-
-
-
-Listar · Crear · Editar · Eliminar
-
-
-
-GET/POST/PUT/DELETE /users
-
-
-
-
-
-/posts
-
-
-
-Listar · Crear · Editar · Eliminar
-
-
-
-GET/POST/PUT/DELETE /posts
-
-
-
-JSONPlaceholder no persiste en el servidor. Actualizás el estado local tras cada POST/PUT/DELETE.
-
-
-
-Conceptos clave
-
-Tres capas
-
-
-
-
-
-
-
-Capa
-
-
-
-Carpeta
-
-
-
-Pregunta
-
-
-
-
-
-Servicio
-
-
-
-services/
-
-
-
-¿Cómo hablo con la API?
-
-
-
-
-
-Hook
-
-
-
-hooks/
-
-
-
-¿Cuándo pido datos y manejo loading/error?
-
-
-
-
-
-Página
-
-
-
-pages/
-
-
-
-¿Qué ve el usuario?
-
-Cuatro estados
-
+```tsx
 if (loading) return <CircularProgress />;
 if (error) return <Alert severity="error">{error}</Alert>;
 if (items.length === 0) return <Alert severity="info">Sin resultados.</Alert>;
 return <Lista items={items} />;
+```
 
+---
 
+## Guía paso a paso — desde cero
 
-Guía paso a paso — desde cero
+Cada **fase** termina modificando **`App.tsx`** para que el navegador muestre el avance. Corré `npm run dev` al cerrar cada una.
 
-Cada fase termina modificando App.tsx para que el navegador muestre el avance. Corré npm run dev al cerrar cada una.
+### Regla de oro
 
-Regla de oro
+> Al final de **cada fase** modificás **`App.tsx`** (y en la Fase 5 también `main.tsx`). Si no ves cambio en pantalla, no avances.
 
+### Cómo va quedando la app
 
+| Fase | Título | Qué ves en el navegador (`App.tsx` renderiza…) |
+| --- | --- | --- |
+| **0** | Proyecto + theme | Título “Día 3 — CRUD” con fondo y tipografía del theme |
+| **1** | Listar usuarios | Spinner → tarjetas con avatar, nombre, @usuario, email |
+| **2** | Crear usuario | Lo anterior + botón **Nuevo usuario** y diálogo |
+| **3** | Editar / eliminar | Lo anterior + iconos lápiz y papelera en cada tarjeta |
+| **4** | Posts CRUD | Pestañas **Usuarios \| Publicaciones** con CRUD en ambas |
+| **5** | Rutas finales | Nav con React Router: `/users` y `/posts` |
 
-Al final de cada fase modificás App.tsx (y en la Fase 5 también main.tsx). Si no ves cambio en pantalla, no avances.
-
-Cómo va quedando la app
-
-
-
-
-
-
-
-Fase
-
-
-
-Título
-
-
-
-Qué ves en el navegador (App.tsx renderiza…)
-
-
-
-
-
-0
-
-
-
-Proyecto + theme
-
-
-
-Título “Día 3 — CRUD” con fondo y tipografía del theme
-
-
-
-
-
-1
-
-
-
-Listar usuarios
-
-
-
-Spinner → tarjetas con avatar, nombre, @usuario, email
-
-
-
-
-
-2
-
-
-
-Crear usuario
-
-
-
-Lo anterior + botón Nuevo usuario y diálogo
-
-
-
-
-
-3
-
-
-
-Editar / eliminar
-
-
-
-Lo anterior + iconos lápiz y papelera en cada tarjeta
-
-
-
-
-
-4
-
-
-
-Posts CRUD
-
-
-
-Pestañas Usuarios | Publicaciones con CRUD en ambas
-
-
-
-
-
-5
-
-
-
-Rutas finales
-
-
-
-Nav con React Router: /users y /posts
-
+```
 FASE 0  ████░░░░░░  "Día 3 — CRUD" (theme)
 FASE 1  ██████░░░░  Lista usuarios
 FASE 2  ████████░░  + Crear
 FASE 3  █████████░  + Editar/Eliminar
 FASE 4  ██████████  + Posts (tabs en App)
 FASE 5  ██████████  Router (misma app, mejor nav)
+```
 
-Leyenda
+### Leyenda
 
+| Símbolo | Significado |
+| --- | --- |
+| 🆕 | Crear archivo |
+| ✏️ | Modificar archivo |
+| 🔌 | **Conectar** — editar `App.tsx` para ver el avance |
 
+### Resumen del orden
 
-
-
-
-
-Símbolo
-
-
-
-Significado
-
-
-
-
-
-🆕
-
-
-
-Crear archivo
-
-
-
-
-
-✏️
-
-
-
-Modificar archivo
-
-
-
-
-
-🔌
-
-
-
-Conectar — editar App.tsx para ver el avance
-
-Resumen del orden
-
+```
 FASE 0  →  Vite, deps, theme                    → 🔌 App.tsx = título con theme
 FASE 1  →  servicio + hook + UsersPage lectura  → 🔌 App.tsx = <UsersPage />
 FASE 2  →  POST + UserFormDialog                → 🔌 App.tsx = <UsersPage /> (con crear)
 FASE 3  →  PUT + DELETE                         → 🔌 App.tsx = <UsersPage /> (CRUD completo)
 FASE 4  →  posts (mismo patrón)                 → 🔌 App.tsx = Tabs users | posts
 FASE 5  →  Layout + Routes                      → 🔌 App.tsx = Routes · main.tsx = BrowserRouter
+```
 
-Mapa: qué archivo conectás en pantalla
+### Mapa: qué archivo conectás en pantalla
 
+| Fase | Archivo que conectás | `App.tsx` muestra |
+| --- | --- | --- |
+| 0 | 🔌 `App.tsx` | Texto + theme |
+| 1 | 🔌 `App.tsx` | `<UsersPage />` lista |
+| 2 | 🔌 `App.tsx` | `<UsersPage />` con crear |
+| 3 | 🔌 `App.tsx` | `<UsersPage />` CRUD |
+| 4 | 🔌 `App.tsx` | Tabs + `<UsersPage />` + `<PostsPage />` |
+| 5 | 🔌 `App.tsx` + `main.tsx` | `<Routes>` con layout |
 
+---
 
+## FASE 0 — Proyecto base y theme
 
+**Qué ves al terminar:** pantalla con título “Día 3 — CRUD”, fondo `#f1f5f9`, texto oscuro legible.
 
+**Pasos:** 0.1 → 0.2 → 0.3 → 0.4 🔌
 
+#### Paso 0.1 — Crear proyecto
 
-Fase
-
-
-
-Archivo que conectás
-
-
-
-App.tsx muestra
-
-
-
-
-
-0
-
-
-
-🔌 App.tsx
-
-
-
-Texto + theme
-
-
-
-
-
-1
-
-
-
-🔌 App.tsx
-
-
-
-<UsersPage /> lista
-
-
-
-
-
-2
-
-
-
-🔌 App.tsx
-
-
-
-<UsersPage /> con crear
-
-
-
-
-
-3
-
-
-
-🔌 App.tsx
-
-
-
-<UsersPage /> CRUD
-
-
-
-
-
-4
-
-
-
-🔌 App.tsx
-
-
-
-Tabs + <UsersPage /> + <PostsPage />
-
-
-
-
-
-5
-
-
-
-🔌 App.tsx + main.tsx
-
-
-
-<Routes> con layout
-
-
-
-FASE 0 — Proyecto base y theme
-
-Qué ves al terminar: pantalla con título “Día 3 — CRUD”, fondo #f1f5f9, texto oscuro legible.
-
-Pasos: 0.1 → 0.2 → 0.3 → 0.4 🔌
-
-Paso 0.1 — Crear proyecto
-
+```bash
 npm create vite@latest dia-3-datos -- --template react-ts
 cd dia-3-datos
 npm install
 npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
 npm install react-router-dom@7
+```
 
-Paso 0.2 — Carpetas vacías
+#### Paso 0.2 — Carpetas vacías
 
+```bash
 mkdir -p src/services src/hooks src/pages src/components
 
 touch \
@@ -451,14 +149,14 @@ touch \
   src/pages/UsersPage.tsx \
   src/pages/PostsPage.tsx \
   src/Layout.tsx
+```
 
-Paso 0.3 — 🆕 src/theme.ts
+#### Paso 0.3 — 🆕 `src/theme.ts`
 
+> **¿Qué hace?** Colores con contraste: fondo claro, texto `#0f172a`, primary azul.  
+> **¿Por qué importa?** Evita gris sobre gris donde no se leen nombres ni emails.
 
-
-¿Qué hace? Colores con contraste: fondo claro, texto #0f172a, primary azul.
-¿Por qué importa? Evita gris sobre gris donde no se leen nombres ni emails.
-
+```tsx
 import { createTheme } from '@mui/material/styles'
 
 export const theme = createTheme({
@@ -481,66 +179,21 @@ export const theme = createTheme({
     },
   },
 })
+```
 
-Paso 0.4 — 🔌 ✏️ src/App.tsx
+#### Paso 0.4 — 🔌 ✏️ `src/App.tsx`
 
+> **¿Qué hace?** Aplica theme y muestra un título de prueba.  
+> **¿Por qué importa?** Primera conexión en pantalla — confirmás que el theme funciona.
 
+| | |
+| --- | --- |
+| **Archivo** | `src/App.tsx` |
+| **Origen** | Template Vite (contador) |
+| **Acción** | Reemplazá **todo** |
+| **Qué ves** | 👁️ Título “Día 3 — CRUD” sobre fondo gris claro |
 
-¿Qué hace? Aplica theme y muestra un título de prueba.
-¿Por qué importa? Primera conexión en pantalla — confirmás que el theme funciona.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Archivo
-
-
-
-src/App.tsx
-
-
-
-
-
-Origen
-
-
-
-Template Vite (contador)
-
-
-
-
-
-Acción
-
-
-
-Reemplazá todo
-
-
-
-
-
-Qué ves
-
-
-
-👁️ Título “Día 3 — CRUD” sobre fondo gris claro
-
+```tsx
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import Typography from '@mui/material/Typography'
@@ -562,31 +215,28 @@ export default function App() {
     </ThemeProvider>
   )
 }
+```
 
-✅ Verificar Fase 0
+#### ✅ Verificar Fase 0
 
+```bash
 npm run dev
+```
 
+- Fondo `#f1f5f9`, texto legible.
+- Ya **no** ves el contador de Vite.
 
+---
 
+## FASE 1 — Listar usuarios (GET)
 
+**Qué ves al terminar:** `App.tsx` renderiza `<UsersPage />` → spinner → tarjetas con avatar e iniciales.
 
-Fondo #f1f5f9, texto legible.
+**Pasos:** 1.1 → 1.2 → 1.3 → 1.4 → 1.5 → 1.6 → 1.7 🔌
 
+#### Paso 1.1 — 🆕 `src/services/api.ts`
 
-
-Ya no ves el contador de Vite.
-
-
-
-FASE 1 — Listar usuarios (GET)
-
-Qué ves al terminar: App.tsx renderiza <UsersPage /> → spinner → tarjetas con avatar e iniciales.
-
-Pasos: 1.1 → 1.2 → 1.3 → 1.4 → 1.5 → 1.6 → 1.7 🔌
-
-Paso 1.1 — 🆕 src/services/api.ts
-
+```tsx
 const BASE = 'https://jsonplaceholder.typicode.com'
 
 export async function request<T>(path: string, options?: RequestInit): Promise<T> {
@@ -598,9 +248,11 @@ export async function request<T>(path: string, options?: RequestInit): Promise<T
   if (res.status === 204) return undefined as T
   return res.json() as Promise<T>
 }
+```
 
-Paso 1.2 — 🆕 src/services/userService.ts
+#### Paso 1.2 — 🆕 `src/services/userService.ts`
 
+```tsx
 import { request } from './api'
 
 export type User = {
@@ -613,9 +265,11 @@ export type User = {
 export function getUsers() {
   return request<User[]>('/users')
 }
+```
 
-Paso 1.3 — 🆕 src/hooks/useUsers.ts
+#### Paso 1.3 — 🆕 `src/hooks/useUsers.ts`
 
+```tsx
 import { useCallback, useEffect, useState } from 'react'
 import { getUsers, type User } from '../services/userService'
 
@@ -640,9 +294,11 @@ export function useUsers() {
 
   return { users, loading, error, reload }
 }
+```
 
-Paso 1.4 — 🆕 src/components/AsyncState.tsx
+#### Paso 1.4 — 🆕 `src/components/AsyncState.tsx`
 
+```tsx
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -659,9 +315,11 @@ export function AsyncState({
   if (empty) return <Alert severity="info">{emptyMessage}</Alert>
   return <>{children}</>
 }
+```
 
-Paso 1.5 — 🆕 src/components/UserCard.tsx
+#### Paso 1.5 — 🆕 `src/components/UserCard.tsx`
 
+```tsx
 import Avatar from '@mui/material/Avatar'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -691,9 +349,11 @@ export function UserCard({ user }: { user: User }) {
     </Card>
   )
 }
+```
 
-Paso 1.6 — 🆕 src/pages/UsersPage.tsx
+#### Paso 1.6 — 🆕 `src/pages/UsersPage.tsx`
 
+```tsx
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { AsyncState } from '../components/AsyncState'
@@ -713,36 +373,18 @@ export function UsersPage() {
     </Stack>
   )
 }
+```
 
-Paso 1.7 — 🔌 ✏️ src/App.tsx
+#### Paso 1.7 — 🔌 ✏️ `src/App.tsx`
 
+> **¿Qué hace?** Reemplaza el título de la Fase 0 por la lista real de usuarios.  
+> **¿Por qué importa?** Conectás servicio + hook + página en pantalla.
 
+| | |
+| --- | --- |
+| **Qué ves** | 👁️ Spinner → 10 tarjetas con avatar, nombre y email legibles |
 
-¿Qué hace? Reemplaza el título de la Fase 0 por la lista real de usuarios.
-¿Por qué importa? Conectás servicio + hook + página en pantalla.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Qué ves
-
-
-
-👁️ Spinner → 10 tarjetas con avatar, nombre y email legibles
-
+```tsx
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
@@ -762,44 +404,39 @@ export default function App() {
     </ThemeProvider>
   )
 }
+```
 
-✅ Verificar Fase 1
+#### ✅ Verificar Fase 1
 
+- `App.tsx` muestra la lista (no el texto “Fase 0”).
+- Nombres en negro, emails legibles.
 
+---
 
+## FASE 2 — Crear usuario (POST)
 
+**Qué ves al terminar:** mismo `App.tsx`, pero `<UsersPage />` ahora tiene botón **Nuevo usuario** y diálogo.
 
-App.tsx muestra la lista (no el texto “Fase 0”).
+**Pasos:** 2.1 → 2.2 → 2.3 → 2.4 🔌
 
+#### Paso 2.1 — ✏️ `userService.ts` + `useUsers.ts`
 
+> **¿Qué hace?** Agrega `createUser` al servicio y `addUser` al hook.  
+> **¿Por qué importa?** POST a la API + actualizar la lista en memoria (JSONPlaceholder no persiste al recargar).
 
-Nombres en negro, emails legibles.
+**En `src/services/userService.ts`**, agregá al final:
 
-
-
-FASE 2 — Crear usuario (POST)
-
-Qué ves al terminar: mismo App.tsx, pero <UsersPage /> ahora tiene botón Nuevo usuario y diálogo.
-
-Pasos: 2.1 → 2.2 → 2.3 → 2.4 🔌
-
-Paso 2.1 — ✏️ userService.ts + useUsers.ts
-
-
-
-¿Qué hace? Agrega createUser al servicio y addUser al hook.
-¿Por qué importa? POST a la API + actualizar la lista en memoria (JSONPlaceholder no persiste al recargar).
-
-En src/services/userService.ts, agregá al final:
-
+```tsx
 export type NewUser = Omit<User, 'id'>
 
 export function createUser(body: NewUser) {
   return request<User>('/users', { method: 'POST', body: JSON.stringify(body) })
 }
+```
 
-Reemplazá src/hooks/useUsers.ts por:
+**Reemplazá `src/hooks/useUsers.ts`** por:
 
+```tsx
 import { useCallback, useEffect, useState } from 'react'
 import {
   createUser,
@@ -847,124 +484,27 @@ export function useUsers() {
 
   return { users, loading, error, saving, reload, addUser }
 }
-
-
-
-
-
-
-
-Bloque
-
-
-
-¿Qué hace?
-
-
-
-¿Por qué importa?
-
-
-
-
-
-saving
-
-
-
-Indica que el POST está en curso
-
-
-
-Deshabilita el botón Guardar del diálogo
-
-
-
-
-
-addUser devuelve boolean
-
-
-
-true si OK, false si error
-
-
-
-La página cierra el diálogo solo si tuvo éxito
-
-
-
-
-
-setUsers((prev) => [...prev, ...])
-
-
-
-Agrega al array local
-
-
-
-Ves el usuario nuevo sin recargar
-
-Paso 2.2 — 🆕 src/components/UserFormDialog.tsx
-
-
-
-¿Qué hace? Diálogo MUI con campos Nombre, Usuario y Email; al guardar llama onSubmit.
-¿Por qué importa? Formulario controlado separado — la página solo abre/cierra el diálogo.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Archivo
-
-
-
-src/components/UserFormDialog.tsx
-
-
-
-
-
-Origen
-
-
-
-Vacío (Paso 0.2)
-
-
-
-
-
-Acción
-
-
-
-Pegá el código completo
-
-
-
-
-
-Qué ves
-
-
-
-👁️ Sin cambio hasta el Paso 2.3
-
+```
+
+| Bloque | ¿Qué hace? | ¿Por qué importa? |
+| --- | --- | --- |
+| `saving` | Indica que el POST está en curso | Deshabilita el botón Guardar del diálogo |
+| `addUser` devuelve `boolean` | `true` si OK, `false` si error | La página cierra el diálogo solo si tuvo éxito |
+| `setUsers((prev) => [...prev, ...])` | Agrega al array local | Ves el usuario nuevo sin recargar |
+
+#### Paso 2.2 — 🆕 `src/components/UserFormDialog.tsx`
+
+> **¿Qué hace?** Diálogo MUI con campos Nombre, Usuario y Email; al guardar llama `onSubmit`.  
+> **¿Por qué importa?** Formulario controlado separado — la página solo abre/cierra el diálogo.
+
+| | |
+| --- | --- |
+| **Archivo** | `src/components/UserFormDialog.tsx` |
+| **Origen** | Vacío (Paso 0.2) |
+| **Acción** | Pegá el código completo |
+| **Qué ves** | 👁️ Sin cambio hasta el Paso 2.3 |
+
+```tsx
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -1065,138 +605,28 @@ export function UserFormDialog({
     </Dialog>
   )
 }
-
-
-
-
-
-
-
-Bloque
-
-
-
-¿Qué hace?
-
-
-
-¿Por qué importa?
-
-
-
-
-
-initial?
-
-
-
-Valores precargados
-
-
-
-Reutilizarás el mismo diálogo para editar en Fase 3
-
-
-
-
-
-useEffect al abrir
-
-
-
-Resetea o precarga el form
-
-
-
-Evita ver datos viejos al abrir de nuevo
-
-
-
-
-
-valid
-
-
-
-Comprueba campos mínimos
-
-
-
-No envía POST con formulario vacío
-
-
-
-
-
-event.preventDefault()
-
-
-
-Evita recarga de página
-
-
-
-Submit clásico de HTML dentro del diálogo
-
-Paso 2.3 — ✏️ src/pages/UsersPage.tsx
-
-
-
-¿Qué hace? Botón Nuevo usuario, estado open y llama addUser al guardar.
-¿Por qué importa? La creación vive en la página; App.tsx sigue renderizando <UsersPage />.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Archivo
-
-
-
-src/pages/UsersPage.tsx
-
-
-
-
-
-Origen
-
-
-
-Versión de la Fase 1
-
-
-
-
-
-Acción
-
-
-
-Reemplazá todo el contenido
-
-
-
-
-
-Qué ves
-
-
-
-👁️ Botón arriba a la derecha + diálogo al hacer clic
-
+```
+
+| Bloque | ¿Qué hace? | ¿Por qué importa? |
+| --- | --- | --- |
+| `initial?` | Valores precargados | Reutilizarás el mismo diálogo para editar en Fase 3 |
+| `useEffect` al abrir | Resetea o precarga el form | Evita ver datos viejos al abrir de nuevo |
+| `valid` | Comprueba campos mínimos | No envía POST con formulario vacío |
+| `event.preventDefault()` | Evita recarga de página | Submit clásico de HTML dentro del diálogo |
+
+#### Paso 2.3 — ✏️ `src/pages/UsersPage.tsx`
+
+> **¿Qué hace?** Botón **Nuevo usuario**, estado `open` y llama `addUser` al guardar.  
+> **¿Por qué importa?** La creación vive en la página; `App.tsx` sigue renderizando `<UsersPage />`.
+
+| | |
+| --- | --- |
+| **Archivo** | `src/pages/UsersPage.tsx` |
+| **Origen** | Versión de la Fase 1 |
+| **Acción** | Reemplazá **todo** el contenido |
+| **Qué ves** | 👁️ Botón arriba a la derecha + diálogo al hacer clic |
+
+```tsx
 import AddIcon from '@mui/icons-material/Add'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -1250,108 +680,25 @@ export function UsersPage() {
     </>
   )
 }
+```
 
+| Bloque | ¿Qué hace? | ¿Por qué importa? |
+| --- | --- | --- |
+| `useState(false)` para `open` | Controla si el diálogo está visible | Patrón open/close sin librerías extra |
+| `handleCreate` | Llama `addUser` y cierra si OK | La lista se actualiza sola vía el hook |
+| `startIcon={<AddIcon />}` | Icono + en el botón | Acción crear reconocible visualmente |
+| `<UserFormDialog />` al final | Hermano del contenido principal | MUI Dialog se renderiza en portal — no afecta el layout |
 
+#### Paso 2.4 — 🔌 ✏️ `src/App.tsx`
 
+> **¿Qué hace?** Actualiza el subtítulo visible para confirmar la fase (el CRUD está en UsersPage).  
+> **¿Por qué importa?** Cada fase **tocás App.tsx** y verificás el avance.
 
+| | |
+| --- | --- |
+| **Qué ves** | 👁️ Lista + botón **Nuevo usuario** arriba a la derecha |
 
-
-
-Bloque
-
-
-
-¿Qué hace?
-
-
-
-¿Por qué importa?
-
-
-
-
-
-useState(false) para open
-
-
-
-Controla si el diálogo está visible
-
-
-
-Patrón open/close sin librerías extra
-
-
-
-
-
-handleCreate
-
-
-
-Llama addUser y cierra si OK
-
-
-
-La lista se actualiza sola vía el hook
-
-
-
-
-
-startIcon={<AddIcon />}
-
-
-
-Icono + en el botón
-
-
-
-Acción crear reconocible visualmente
-
-
-
-
-
-<UserFormDialog /> al final
-
-
-
-Hermano del contenido principal
-
-
-
-MUI Dialog se renderiza en portal — no afecta el layout
-
-Paso 2.4 — 🔌 ✏️ src/App.tsx
-
-
-
-¿Qué hace? Actualiza el subtítulo visible para confirmar la fase (el CRUD está en UsersPage).
-¿Por qué importa? Cada fase tocás App.tsx y verificás el avance.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Qué ves
-
-
-
-👁️ Lista + botón Nuevo usuario arriba a la derecha
-
+```tsx
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
@@ -1375,43 +722,31 @@ export default function App() {
     </ThemeProvider>
   )
 }
+```
 
-✅ Verificar Fase 2
+#### ✅ Verificar Fase 2
 
+```bash
 npm run dev
+```
 
+1. Ves el botón **Nuevo usuario** arriba a la derecha.
+2. Clic → se abre el diálogo con tres campos.
+3. Completás Nombre, Usuario, Email → **Guardar**.
+4. El diálogo se cierra y el usuario aparece al final de la lista.
+5. Si dejás campos vacíos, **Guardar** permanece deshabilitado.
 
+---
 
+## FASE 3 — Editar y eliminar (PUT + DELETE)
 
+**Qué ves al terminar:** tarjetas con iconos Editar y Eliminar.
 
-Ves el botón Nuevo usuario arriba a la derecha.
+**Pasos:** 3.1 → 3.2 → 3.3 → 3.4 🔌
 
+#### Paso 3.1 — ✏️ `userService.ts`
 
-
-Clic → se abre el diálogo con tres campos.
-
-
-
-Completás Nombre, Usuario, Email → Guardar.
-
-
-
-El diálogo se cierra y el usuario aparece al final de la lista.
-
-
-
-Si dejás campos vacíos, Guardar permanece deshabilitado.
-
-
-
-FASE 3 — Editar y eliminar (PUT + DELETE)
-
-Qué ves al terminar: tarjetas con iconos Editar y Eliminar.
-
-Pasos: 3.1 → 3.2 → 3.3 → 3.4 🔌
-
-Paso 3.1 — ✏️ userService.ts
-
+```tsx
 export function updateUser(id: number, body: NewUser) {
   return request<User>(`/users/${id}`, { method: 'PUT', body: JSON.stringify({ ...body, id }) })
 }
@@ -1419,9 +754,11 @@ export function updateUser(id: number, body: NewUser) {
 export function deleteUser(id: number) {
   return request<void>(`/users/${id}`, { method: 'DELETE' })
 }
+```
 
-Paso 3.2 — ✏️ useUsers.ts
+#### Paso 3.2 — ✏️ `useUsers.ts`
 
+```tsx
 async function editUser(id: number, body: NewUser) {
   await updateUser(id, body)
   setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, ...body } : u)))
@@ -1431,37 +768,19 @@ async function removeUser(id: number) {
   await deleteUser(id)
   setUsers((prev) => prev.filter((u) => u.id !== id))
 }
+```
 
-Paso 3.3 — ✏️ UserCard.tsx + UsersPage.tsx
+#### Paso 3.3 — ✏️ `UserCard.tsx` + `UsersPage.tsx`
 
+> **¿Qué hace?** `IconButton` Editar (reabre diálogo con datos) y Eliminar (`confirm` + `removeUser`).
 
+#### Paso 3.4 — 🔌 ✏️ `src/App.tsx`
 
-¿Qué hace? IconButton Editar (reabre diálogo con datos) y Eliminar (confirm + removeUser).
+| | |
+| --- | --- |
+| **Qué ves** | 👁️ CRUD usuarios completo — crear, editar, eliminar |
 
-Paso 3.4 — 🔌 ✏️ src/App.tsx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Qué ves
-
-
-
-👁️ CRUD usuarios completo — crear, editar, eliminar
-
+```tsx
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
@@ -1485,72 +804,47 @@ export default function App() {
     </ThemeProvider>
   )
 }
+```
 
-✅ Verificar Fase 3
+#### ✅ Verificar Fase 3
 
+- Editar nombre → tarjeta se actualiza.
+- Eliminar → desaparece de la lista.
 
+---
 
+## FASE 4 — Posts CRUD
 
+**Qué ves al terminar:** `App.tsx` con pestañas **Usuarios | Publicaciones**; cada pestaña con su CRUD.
 
-Editar nombre → tarjeta se actualiza.
+**Pasos:** 4.1 → 4.2 → 4.3 → 4.4 → 4.5 🔌
 
+#### Paso 4.1 — 🆕 `postService.ts` (GET/POST/PUT/DELETE)
 
+Mismo patrón que `userService.ts`. Tipo `Post`: `id`, `userId`, `title`, `body`.
 
-Eliminar → desaparece de la lista.
+#### Paso 4.2 — 🆕 `usePosts.ts`
 
+Mismo patrón que `useUsers.ts`.
 
-
-FASE 4 — Posts CRUD
-
-Qué ves al terminar: App.tsx con pestañas Usuarios | Publicaciones; cada pestaña con su CRUD.
-
-Pasos: 4.1 → 4.2 → 4.3 → 4.4 → 4.5 🔌
-
-Paso 4.1 — 🆕 postService.ts (GET/POST/PUT/DELETE)
-
-Mismo patrón que userService.ts. Tipo Post: id, userId, title, body.
-
-Paso 4.2 — 🆕 usePosts.ts
-
-Mismo patrón que useUsers.ts.
-
-Paso 4.3 — 🆕 PostCard.tsx + PostFormDialog.tsx
+#### Paso 4.3 — 🆕 `PostCard.tsx` + `PostFormDialog.tsx`
 
 Tarjeta con título destacado y cuerpo truncado. Formulario: userId, title, body.
 
-Paso 4.4 — 🆕 src/pages/PostsPage.tsx
+#### Paso 4.4 — 🆕 `src/pages/PostsPage.tsx`
 
-Copiá la estructura de UsersPage.tsx adaptada a posts.
+Copiá la estructura de `UsersPage.tsx` adaptada a posts.
 
-Paso 4.5 — 🔌 ✏️ src/App.tsx
+#### Paso 4.5 — 🔌 ✏️ `src/App.tsx`
 
+> **¿Qué hace?** Tabs MUI alternan `<UsersPage />` y `<PostsPage />`.  
+> **¿Por qué importa?** Dos CRUD en una sola app **antes** de React Router — cambio visible inmediato.
 
+| | |
+| --- | --- |
+| **Qué ves** | 👁️ Pestañas Usuarios / Publicaciones, cada una con su CRUD |
 
-¿Qué hace? Tabs MUI alternan <UsersPage /> y <PostsPage />.
-¿Por qué importa? Dos CRUD en una sola app antes de React Router — cambio visible inmediato.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Qué ves
-
-
-
-👁️ Pestañas Usuarios / Publicaciones, cada una con su CRUD
-
+```tsx
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
@@ -1580,67 +874,40 @@ export default function App() {
     </ThemeProvider>
   )
 }
+```
 
-✅ Verificar Fase 4
+#### ✅ Verificar Fase 4
 
+- Pestaña Usuarios → CRUD usuarios.
+- Pestaña Publicaciones → CRUD posts.
 
+---
 
+## FASE 5 — Layout y rutas (versión final)
 
+**Qué ves al terminar:** misma funcionalidad, nav con URLs `/users` y `/posts`.
 
-Pestaña Usuarios → CRUD usuarios.
+**Pasos:** 5.1 → 5.2 → 5.3 🔌 → 5.4 🔌
 
+#### Paso 5.1 — 🆕 `src/Layout.tsx`
 
+AppBar oscuro, `NavLink` a `/users` y `/posts`, `<Outlet />`.
 
-Pestaña Publicaciones → CRUD posts.
+#### Paso 5.2 — ✏️ `UsersPage.tsx` / `PostsPage.tsx`
 
+> **¿Qué hace?** Quitá subtítulos “Fase X” si los agregaste; las páginas quedan limpias.  
+> **¿Por qué importa?** El layout y las rutas reemplazan las tabs de `App.tsx`.
 
+#### Paso 5.3 — 🔌 ✏️ `src/App.tsx`
 
-FASE 5 — Layout y rutas (versión final)
+> **¿Qué hace?** Reemplaza Tabs por `<Routes>`.  
+> **¿Por qué importa?** Versión final de la app.
 
-Qué ves al terminar: misma funcionalidad, nav con URLs /users y /posts.
+| | |
+| --- | --- |
+| **Qué ves** | 👁️ Nav Usuarios / Publicaciones; URL cambia al navegar |
 
-Pasos: 5.1 → 5.2 → 5.3 🔌 → 5.4 🔌
-
-Paso 5.1 — 🆕 src/Layout.tsx
-
-AppBar oscuro, NavLink a /users y /posts, <Outlet />.
-
-Paso 5.2 — ✏️ UsersPage.tsx / PostsPage.tsx
-
-
-
-¿Qué hace? Quitá subtítulos “Fase X” si los agregaste; las páginas quedan limpias.
-¿Por qué importa? El layout y las rutas reemplazan las tabs de App.tsx.
-
-Paso 5.3 — 🔌 ✏️ src/App.tsx
-
-
-
-¿Qué hace? Reemplaza Tabs por <Routes>.
-¿Por qué importa? Versión final de la app.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Qué ves
-
-
-
-👁️ Nav Usuarios / Publicaciones; URL cambia al navegar
-
+```tsx
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { Navigate, Route, Routes } from 'react-router-dom'
@@ -1663,14 +930,14 @@ export default function App() {
     </ThemeProvider>
   )
 }
+```
 
-Paso 5.4 — 🔌 ✏️ src/main.tsx
+#### Paso 5.4 — 🔌 ✏️ `src/main.tsx`
 
+> **¿Qué hace?** Envuelve `<App />` con `<BrowserRouter>`.  
+> **¿Por qué importa?** Sin esto las rutas no observan la URL.
 
-
-¿Qué hace? Envuelve <App /> con <BrowserRouter>.
-¿Por qué importa? Sin esto las rutas no observan la URL.
-
+```tsx
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
@@ -1683,102 +950,43 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </StrictMode>,
 )
+```
 
-✅ Verificar Fase 5
+#### ✅ Verificar Fase 5
 
+- [ ] `/` → `/users`
+- [ ] CRUD usuarios y posts funcionan
+- [ ] Loading, error, empty en ambas rutas
+- [ ] Nombres legibles con avatar
+- [ ] `npm run build` sin errores
 
+---
 
+## Checkpoint y entrega
 
-
-/ → /users
-
-
-
-CRUD usuarios y posts funcionan
-
-
-
-Loading, error, empty en ambas rutas
-
-
-
-Nombres legibles con avatar
-
-
-
-npm run build sin errores
-
-
-
-Checkpoint y entrega
-
+```bash
 npm run build
 git add .
 git commit -m "feat: day 3 — CRUD users and posts with JSONPlaceholder"
+```
 
+---
 
+## Errores comunes
 
-Errores comunes
+| Problema | Solución |
+| --- | --- |
+| Fase sin cambio visible | Siempre cerrá con 🔌 `App.tsx` |
+| Nombres ilegibles | Theme + cards blancas + `text.primary` oscuro |
+| Spinner eterno | `setLoading(false)` en `finally` |
+| Empty mientras carga | Orden: loading → error → empty → success |
 
+---
 
+## Regla práctica
 
+> **Servicio** = qué pedir · **Hook** = cuándo y con qué estado · **Página** = cómo se ve · **App.tsx** = conectás cada fase
 
-
-
-
-Problema
-
-
-
-Solución
-
-
-
-
-
-Fase sin cambio visible
-
-
-
-Siempre cerrá con 🔌 App.tsx
-
-
-
-
-
-Nombres ilegibles
-
-
-
-Theme + cards blancas + text.primary oscuro
-
-
-
-
-
-Spinner eterno
-
-
-
-setLoading(false) en finally
-
-
-
-
-
-Empty mientras carga
-
-
-
-Orden: loading → error → empty → success
-
-
-
-Regla práctica
-
-
-
-Servicio = qué pedir · Hook = cuándo y con qué estado · Página = cómo se ve · App.tsx = conectás cada fase
-
+```text
 La red es incierta; la interfaz debe representar cada resultado posible.
-
+```
