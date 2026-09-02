@@ -744,11 +744,19 @@ npm run dev
 
 **Pasos:** 3.1 → 3.2 → 3.3 → 3.4 🔌
 
-#### Paso 3.1 — ✏️ `userService.ts`
+#### Paso 3.1 — ✏️ `src/services/userService.ts`
+
+> **¿Qué hace?** Agrega `updateUser` (PUT) y `deleteUser` (DELETE).  
+> **¿Por qué importa?** Completás el CRUD en la capa servicio.
+
+**Agregá al final** de `src/services/userService.ts`:
 
 ```tsx
 export function updateUser(id: number, body: NewUser) {
-  return request<User>(`/users/${id}`, { method: 'PUT', body: JSON.stringify({ ...body, id }) })
+  return request<User>(`/users/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({ ...body, id }),
+  })
 }
 
 export function deleteUser(id: number) {
@@ -756,23 +764,285 @@ export function deleteUser(id: number) {
 }
 ```
 
-#### Paso 3.2 — ✏️ `useUsers.ts`
+#### Paso 3.2 — ✏️ `src/hooks/useUsers.ts`
+
+> **¿Qué hace?** Agrega `editUser` y `removeUser` al hook.  
+> **¿Por qué importa?** La página no llama al servicio directo — usa el hook.
+
+**Reemplazá `src/hooks/useUsers.ts`** por:
 
 ```tsx
-async function editUser(id: number, body: NewUser) {
-  await updateUser(id, body)
-  setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, ...body } : u)))
-}
+import { useCallback, useEffect, useState } from 'react'
+import {
+  createUser,
+  deleteUser,
+  getUsers,
+  updateUser,
+  type NewUser,
+  type User,
+} from '../services/userService'
 
-async function removeUser(id: number) {
-  await deleteUser(id)
-  setUsers((prev) => prev.filter((u) => u.id !== id))
+export function useUsers() {
+  const [users, setUsers] = useState<User[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [saving, setSaving] = useState(false)
+
+  const reload = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      setUsers(await getUsers())
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Error desconocido')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    void reload()
+  }, [reload])
+
+  async function addUser(body: NewUser) {
+    setSaving(true)
+    setError(null)
+    try {
+      const created = await createUser(body)
+      setUsers((prev) => [...prev, { ...body, id: created.id }])
+      return true
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'No se pudo crear el usuario')
+      return false
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function editUser(id: number, body: NewUser) {
+    setSaving(true)
+    setError(null)
+    try {
+      await updateUser(id, body)
+      setUsers((prev) =>
+        prev.map((u) => (u.id === id ? { ...u, ...body, id } : u)),
+      )
+      return true
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'No se pudo actualizar')
+      return false
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function removeUser(id: number) {
+    setSaving(true)
+    setError(null)
+    try {
+      await deleteUser(id)
+      setUsers((prev) => prev.filter((u) => u.id !== id))
+      return true
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'No se pudo eliminar')
+      return false
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return { users, loading, error, saving, reload, addUser, editUser, removeUser }
 }
 ```
 
+| Bloque | ¿Qué hace? | ¿Por qué importa? |
+| --- | --- | --- |
+| `editUser` | PUT + actualiza array local | Ves el cambio sin recargar |
+| `removeUser` | DELETE + filtra array | El usuario desaparece al instante |
+| Devuelven `boolean` | Igual que `addUser` | La página cierra diálogos solo si OK |
+
 #### Paso 3.3 — ✏️ `UserCard.tsx` + `UsersPage.tsx`
 
-> **¿Qué hace?** `IconButton` Editar (reabre diálogo con datos) y Eliminar (`confirm` + `removeUser`).
+> **¿Qué hace?** Cada tarjeta recibe botones Editar/Eliminar; la página reabre el diálogo con datos del usuario.  
+> **¿Por qué importa?** Completás el CRUD en la UI sin duplicar formularios.
+
+**Reemplazá `src/components/UserCard.tsx`** por:
+
+```tsx
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import Avatar from '@mui/material/Avatar'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import IconButton from '@mui/material/IconButton'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import type { User } from '../services/userService'
+
+function initials(name: string) {
+  return name.split(' ').slice(0, 2).map((p) => p[0]).join('').toUpperCase()
+}
+
+type UserCardProps = {
+  user: User
+  onEdit: (user: User) => void
+  onDelete: (user: User) => void
+}
+
+export function UserCard({ user, onEdit, onDelete }: UserCardProps) {
+  return (
+    <Card>
+      <CardContent>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Avatar sx={{ bgcolor: 'primary.main', width: 48, height: 48 }}>
+            {initials(user.name)}
+          </Avatar>
+
+          <Stack spacing={0.25} sx={{ flexGrow: 1 }}>
+            <Typography variant="subtitle1">{user.name}</Typography>
+            <Typography variant="body2" color="text.secondary">
+              @{user.username}
+            </Typography>
+            <Typography variant="body2">{user.email}</Typography>
+          </Stack>
+
+          <Stack direction="row">
+            <IconButton
+              aria-label={`Editar ${user.name}`}
+              onClick={() => onEdit(user)}
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              aria-label={`Eliminar ${user.name}`}
+              color="error"
+              onClick={() => onDelete(user)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Stack>
+        </Stack>
+      </CardContent>
+    </Card>
+  )
+}
+```
+
+**Reemplazá `src/pages/UsersPage.tsx`** por:
+
+```tsx
+import AddIcon from '@mui/icons-material/Add'
+import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { useState } from 'react'
+import { AsyncState } from '../components/AsyncState'
+import { UserCard } from '../components/UserCard'
+import { UserFormDialog } from '../components/UserFormDialog'
+import { useUsers } from '../hooks/useUsers'
+import type { NewUser, User } from '../services/userService'
+
+export function UsersPage() {
+  const { users, loading, error, saving, addUser, editUser, removeUser } =
+    useUsers()
+
+  const [createOpen, setCreateOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+
+  async function handleCreate(data: NewUser) {
+    const ok = await addUser(data)
+    if (ok) setCreateOpen(false)
+  }
+
+  function handleStartEdit(user: User) {
+    setEditingUser(user)
+    setEditOpen(true)
+  }
+
+  async function handleEdit(data: NewUser) {
+    if (!editingUser) return
+    const ok = await editUser(editingUser.id, data)
+    if (ok) {
+      setEditOpen(false)
+      setEditingUser(null)
+    }
+  }
+
+  async function handleDelete(user: User) {
+    const confirmed = window.confirm(
+      `¿Eliminar a ${user.name}? Esta acción no se puede deshacer.`,
+    )
+    if (!confirmed) return
+    await removeUser(user.id)
+  }
+
+  return (
+    <>
+      <Stack spacing={3}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography variant="h4">Usuarios</Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setCreateOpen(true)}
+          >
+            Nuevo usuario
+          </Button>
+        </Stack>
+
+        <AsyncState loading={loading} error={error} empty={!users.length}>
+          <Stack spacing={2}>
+            {users.map((user) => (
+              <UserCard
+                key={user.id}
+                user={user}
+                onEdit={handleStartEdit}
+                onDelete={handleDelete}
+              />
+            ))}
+          </Stack>
+        </AsyncState>
+      </Stack>
+
+      <UserFormDialog
+        open={createOpen}
+        title="Nuevo usuario"
+        saving={saving}
+        onClose={() => setCreateOpen(false)}
+        onSubmit={handleCreate}
+      />
+
+      <UserFormDialog
+        open={editOpen}
+        title="Editar usuario"
+        saving={saving}
+        initial={
+          editingUser
+            ? {
+                name: editingUser.name,
+                username: editingUser.username,
+                email: editingUser.email,
+              }
+            : undefined
+        }
+        onClose={() => {
+          setEditOpen(false)
+          setEditingUser(null)
+        }}
+        onSubmit={handleEdit}
+      />
+    </>
+  )
+}
+```
+
+| Bloque | ¿Qué hace? | ¿Por qué importa? |
+| --- | --- | --- |
+| `onEdit` / `onDelete` en UserCard | Sube acciones a la página | La tarjeta no conoce el hook — solo dispara eventos |
+| `editingUser` | Guarda quién se edita | Precarga el diálogo con `initial` |
+| Dos `UserFormDialog` | Uno crear, uno editar | Mismo componente, distinto título y handler |
+| `window.confirm` | Confirma antes de DELETE | Evita borrados accidentales |
 
 #### Paso 3.4 — 🔌 ✏️ `src/App.tsx`
 
@@ -808,8 +1078,14 @@ export default function App() {
 
 #### ✅ Verificar Fase 3
 
-- Editar nombre → tarjeta se actualiza.
-- Eliminar → desaparece de la lista.
+```bash
+npm run dev
+```
+
+1. Cada tarjeta muestra iconos **Editar** y **Eliminar**.
+2. Editar → diálogo precargado → Guardar → tarjeta actualizada.
+3. Eliminar → confirmación → usuario desaparece.
+4. Crear sigue funcionando (Fase 2).
 
 ---
 
@@ -819,21 +1095,400 @@ export default function App() {
 
 **Pasos:** 4.1 → 4.2 → 4.3 → 4.4 → 4.5 🔌
 
-#### Paso 4.1 — 🆕 `postService.ts` (GET/POST/PUT/DELETE)
+#### Paso 4.1 — 🆕 `src/services/postService.ts`
 
-Mismo patrón que `userService.ts`. Tipo `Post`: `id`, `userId`, `title`, `body`.
+> **¿Qué hace?** CRUD completo de publicaciones.  
+> **¿Por qué importa?** Mismo patrón que usuarios — reutilizás sin reescribir lógica fetch.
 
-#### Paso 4.2 — 🆕 `usePosts.ts`
+```tsx
+import { request } from './api'
 
-Mismo patrón que `useUsers.ts`.
+export type Post = {
+  id: number
+  userId: number
+  title: string
+  body: string
+}
+
+export type NewPost = Omit<Post, 'id'>
+
+export function getPosts() {
+  return request<Post[]>('/posts')
+}
+
+export function createPost(body: NewPost) {
+  return request<Post>('/posts', { method: 'POST', body: JSON.stringify(body) })
+}
+
+export function updatePost(id: number, body: NewPost) {
+  return request<Post>(`/posts/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({ ...body, id }),
+  })
+}
+
+export function deletePost(id: number) {
+  return request<void>(`/posts/${id}`, { method: 'DELETE' })
+}
+```
+
+#### Paso 4.2 — 🆕 `src/hooks/usePosts.ts`
+
+> **¿Qué hace?** Hook espejo de `useUsers` para posts.  
+> **¿Por qué importa?** La página de posts no duplica estado ni fetch.
+
+```tsx
+import { useCallback, useEffect, useState } from 'react'
+import {
+  createPost,
+  deletePost,
+  getPosts,
+  updatePost,
+  type NewPost,
+  type Post,
+} from '../services/postService'
+
+export function usePosts() {
+  const [posts, setPosts] = useState<Post[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [saving, setSaving] = useState(false)
+
+  const reload = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      setPosts(await getPosts())
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Error desconocido')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    void reload()
+  }, [reload])
+
+  async function addPost(body: NewPost) {
+    setSaving(true)
+    setError(null)
+    try {
+      const created = await createPost(body)
+      setPosts((prev) => [{ ...body, id: created.id }, ...prev])
+      return true
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'No se pudo crear')
+      return false
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function editPost(id: number, body: NewPost) {
+    setSaving(true)
+    setError(null)
+    try {
+      await updatePost(id, body)
+      setPosts((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, ...body, id } : p)),
+      )
+      return true
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'No se pudo actualizar')
+      return false
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function removePost(id: number) {
+    setSaving(true)
+    setError(null)
+    try {
+      await deletePost(id)
+      setPosts((prev) => prev.filter((p) => p.id !== id))
+      return true
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'No se pudo eliminar')
+      return false
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return { posts, loading, error, saving, reload, addPost, editPost, removePost }
+}
+```
 
 #### Paso 4.3 — 🆕 `PostCard.tsx` + `PostFormDialog.tsx`
 
-Tarjeta con título destacado y cuerpo truncado. Formulario: userId, title, body.
+> **¿Qué hace?** Tarjeta de post con acciones; diálogo con userId, título y cuerpo.  
+> **¿Por qué importa?** UI de posts separada pero idéntica en estructura a usuarios.
+
+**`src/components/PostCard.tsx`**
+
+```tsx
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import IconButton from '@mui/material/IconButton'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import type { Post } from '../services/postService'
+
+type PostCardProps = {
+  post: Post
+  onEdit: (post: Post) => void
+  onDelete: (post: Post) => void
+}
+
+export function PostCard({ post, onEdit, onDelete }: PostCardProps) {
+  return (
+    <Card>
+      <CardContent>
+        <Stack direction="row" spacing={2} alignItems="flex-start">
+          <Stack spacing={0.5} sx={{ flexGrow: 1 }}>
+            <Typography variant="overline" color="text.secondary">
+              Usuario #{post.userId}
+            </Typography>
+            <Typography variant="subtitle1">{post.title}</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {post.body}
+            </Typography>
+          </Stack>
+
+          <Stack direction="row">
+            <IconButton aria-label="Editar post" onClick={() => onEdit(post)}>
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              aria-label="Eliminar post"
+              color="error"
+              onClick={() => onDelete(post)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Stack>
+        </Stack>
+      </CardContent>
+    </Card>
+  )
+}
+```
+
+**`src/components/PostFormDialog.tsx`**
+
+```tsx
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import { useEffect, useState } from 'react'
+import type { NewPost } from '../services/postService'
+
+type PostFormDialogProps = {
+  open: boolean
+  title: string
+  initial?: NewPost
+  saving?: boolean
+  onClose: () => void
+  onSubmit: (data: NewPost) => void | Promise<void>
+}
+
+const emptyForm: NewPost = { userId: 1, title: '', body: '' }
+
+export function PostFormDialog({
+  open,
+  title,
+  initial,
+  saving = false,
+  onClose,
+  onSubmit,
+}: PostFormDialogProps) {
+  const [form, setForm] = useState<NewPost>(emptyForm)
+
+  useEffect(() => {
+    if (open) setForm(initial ?? emptyForm)
+  }, [open, initial])
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault()
+    await onSubmit({
+      userId: Number(form.userId),
+      title: form.title.trim(),
+      body: form.body.trim(),
+    })
+  }
+
+  const valid = form.title.trim().length >= 3 && form.body.trim().length >= 10
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <form onSubmit={handleSubmit}>
+        <DialogTitle>{title}</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ pt: 1 }}>
+            <TextField
+              label="ID de usuario"
+              type="number"
+              value={form.userId}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, userId: Number(e.target.value) }))
+              }
+              required
+              fullWidth
+            />
+            <TextField
+              label="Título"
+              value={form.title}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, title: e.target.value }))
+              }
+              required
+              fullWidth
+              autoFocus
+            />
+            <TextField
+              label="Contenido"
+              value={form.body}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, body: e.target.value }))
+              }
+              required
+              fullWidth
+              multiline
+              minRows={3}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={onClose} disabled={saving}>
+            Cancelar
+          </Button>
+          <Button type="submit" variant="contained" disabled={!valid || saving}>
+            {saving ? 'Guardando…' : 'Guardar'}
+          </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
+  )
+}
+```
 
 #### Paso 4.4 — 🆕 `src/pages/PostsPage.tsx`
 
-Copiá la estructura de `UsersPage.tsx` adaptada a posts.
+> **¿Qué hace?** Página CRUD de posts — copia la estructura de `UsersPage`.  
+> **¿Por qué importa?** Demostrás que el patrón escala a otra entidad.
+
+```tsx
+import AddIcon from '@mui/icons-material/Add'
+import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { useState } from 'react'
+import { AsyncState } from '../components/AsyncState'
+import { PostCard } from '../components/PostCard'
+import { PostFormDialog } from '../components/PostFormDialog'
+import { usePosts } from '../hooks/usePosts'
+import type { NewPost, Post } from '../services/postService'
+
+export function PostsPage() {
+  const { posts, loading, error, saving, addPost, editPost, removePost } =
+    usePosts()
+
+  const [createOpen, setCreateOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
+  const [editingPost, setEditingPost] = useState<Post | null>(null)
+
+  async function handleCreate(data: NewPost) {
+    const ok = await addPost(data)
+    if (ok) setCreateOpen(false)
+  }
+
+  function handleStartEdit(post: Post) {
+    setEditingPost(post)
+    setEditOpen(true)
+  }
+
+  async function handleEdit(data: NewPost) {
+    if (!editingPost) return
+    const ok = await editPost(editingPost.id, data)
+    if (ok) {
+      setEditOpen(false)
+      setEditingPost(null)
+    }
+  }
+
+  async function handleDelete(post: Post) {
+    const confirmed = window.confirm(`¿Eliminar "${post.title}"?`)
+    if (!confirmed) return
+    await removePost(post.id)
+  }
+
+  return (
+    <>
+      <Stack spacing={3}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography variant="h4">Publicaciones</Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setCreateOpen(true)}
+          >
+            Nueva publicación
+          </Button>
+        </Stack>
+
+        <AsyncState loading={loading} error={error} empty={!posts.length}>
+          <Stack spacing={2}>
+            {posts.map((post) => (
+              <PostCard
+                key={post.id}
+                post={post}
+                onEdit={handleStartEdit}
+                onDelete={handleDelete}
+              />
+            ))}
+          </Stack>
+        </AsyncState>
+      </Stack>
+
+      <PostFormDialog
+        open={createOpen}
+        title="Nueva publicación"
+        saving={saving}
+        onClose={() => setCreateOpen(false)}
+        onSubmit={handleCreate}
+      />
+
+      <PostFormDialog
+        open={editOpen}
+        title="Editar publicación"
+        saving={saving}
+        initial={
+          editingPost
+            ? {
+                userId: editingPost.userId,
+                title: editingPost.title,
+                body: editingPost.body,
+              }
+            : undefined
+        }
+        onClose={() => {
+          setEditOpen(false)
+          setEditingPost(null)
+        }}
+        onSubmit={handleEdit}
+      />
+    </>
+  )
+}
+```
 
 #### Paso 4.5 — 🔌 ✏️ `src/App.tsx`
 
@@ -878,8 +1533,14 @@ export default function App() {
 
 #### ✅ Verificar Fase 4
 
-- Pestaña Usuarios → CRUD usuarios.
-- Pestaña Publicaciones → CRUD posts.
+```bash
+npm run dev
+```
+
+1. Pestaña **Usuarios** → CRUD completo (Fases 2–3).
+2. Pestaña **Publicaciones** → spinner → lista de posts.
+3. **Nueva publicación** → diálogo → post al inicio de la lista.
+4. Editar y eliminar posts funcionan.
 
 ---
 
@@ -891,12 +1552,54 @@ export default function App() {
 
 #### Paso 5.1 — 🆕 `src/Layout.tsx`
 
-AppBar oscuro, `NavLink` a `/users` y `/posts`, `<Outlet />`.
+> **¿Qué hace?** AppBar con navegación y `<Outlet />` para las rutas hijas.  
+> **¿Por qué importa?** Reemplaza las tabs de Fase 4 por URLs reales.
+
+```tsx
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import { NavLink, Outlet } from 'react-router-dom'
+
+export function Layout() {
+  return (
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Día 3 — CRUD
+          </Typography>
+          <Button
+            component={NavLink}
+            to="/users"
+            color="inherit"
+            sx={{ mr: 1 }}
+          >
+            Usuarios
+          </Button>
+          <Button component={NavLink} to="/posts" color="inherit">
+            Publicaciones
+          </Button>
+        </Toolbar>
+      </AppBar>
+
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Outlet />
+      </Container>
+    </Box>
+  )
+}
+```
 
 #### Paso 5.2 — ✏️ `UsersPage.tsx` / `PostsPage.tsx`
 
-> **¿Qué hace?** Quitá subtítulos “Fase X” si los agregaste; las páginas quedan limpias.  
-> **¿Por qué importa?** El layout y las rutas reemplazan las tabs de `App.tsx`.
+> **¿Qué hace?** Las páginas ya no necesitan subtítulo “Fase X” — eso vivía en `App.tsx`.  
+> **¿Por qué importa?** Con layout + rutas, `App.tsx` queda limpio.
+
+No hace falta cambiar las páginas si ya tenés el CRUD de Fases 3 y 4. Solo asegurate de **no** depender de props del tab en `App.tsx`.
 
 #### Paso 5.3 — 🔌 ✏️ `src/App.tsx`
 
